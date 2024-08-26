@@ -21,16 +21,16 @@
   register: calico_typha
   ignore_errors: true
 
-- name: Set fact for calico-kube-controllers
-  set_fact:
-    _calico_kube_controllers_not_exist: "{{ calico_kube_controllers.stdout == 0 }}"
+# - name: Set fact for calico-kube-controllers
+#   set_fact:
+#     _calico_kube_controllers_not_exist: "{{ calico_kube_controllers.stdout == 0 }}"
 
-- name: Set fact for calico-kube-controller
-  set_fact:
-    _calico_typha_not_exist: "{{ calico_typha.stdout == 0 }}"
+# - name: Set fact for calico-kube-controller
+#   set_fact:
+#     _calico_typha_not_exist: "{{ calico_typha.stdout == 0 }}"
 
 - name: Install calico
-  when: _calico_kube_controllers_not_exist and _calico_typha_not_exist
+  when:  calico_kube_controllers.stdout == "" or calico_typha.stdout == ""
   ansible.builtin.shell:
     cmd: "kubectl create -f /tmp/calico.values.yaml"
   

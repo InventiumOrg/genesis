@@ -1,0 +1,3 @@
+config:
+  digitalocean:token:
+    secure: AAABAMZSQHzMAVcCpYW9xhgarF8Mfd9eQHgwBN5nQtRmBRcWIuoOgbFOQtymgJMceYfkwu61xTZV+hwCSEqgJNdq8CIwRC/H6xRiGDBdTVMVxV40OqIyBbwU7jsuPQG48iNRKDfJZg==

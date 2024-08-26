@@ -5,12 +5,12 @@
   register: tigera_operator
   ignore_errors: true
 
-- name : Set fact for calico operator
-  set_fact:
-    _calico_operator_not_exist: "{{ tigera_operator.stdout == 0 }}"
+# - name : Set fact for calico operator
+#   set_fact:
+#     _calico_operator_not_exist: "{{ tigera_operator.stdout }}"
 
 - name: Install calico operator
-  when: _calico_operator_not_exist 
+  when: tigera_operator.stdout == ""
   ansible.builtin.shell:
     cmd: "kubectl create -f {{ calico__operator_manifests }}"
   register: calico_operator
