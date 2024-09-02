@@ -1,4 +1,4 @@
-package infrastructure
+package cluster
 
 import (
 	"log/slog"
@@ -39,7 +39,7 @@ func (d *DKOSCluster) NewDKOSCluster(ctx *pulumi.Context, vpc *digitalocean.Vpc)
 			},
 		},
 		Region:                        pulumi.String(d.Region),
-		Version:                       pulumi.String(d.Version),
+		Version:                       pulumi.String("1.30.4-do.0"),
 		AutoUpgrade:                   pulumi.Bool(false),
 		DestroyAllAssociatedResources: pulumi.Bool(false),
 		Ha:                            pulumi.Bool(false),
@@ -50,12 +50,14 @@ func (d *DKOSCluster) NewDKOSCluster(ctx *pulumi.Context, vpc *digitalocean.Vpc)
 			pulumi.String("string"),
 		},
 		VpcUuid: vpc.ID(),
-	})
+	}, pulumi.Timeouts(&pulumi.CustomTimeouts{
+		Create: "5m",
+		Delete: "5m",
+	}), pulumi.Parent(vpc))
 
 	if err != nil {
 		slog.Error(err.Error())
 		return nil, err
 	}
-
 	return dkosCluster, nil
 }
