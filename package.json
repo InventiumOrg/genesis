@@ -42,7 +42,7 @@
     "autoprefixer": "^10.4.20",
     "drizzle-orm": "^0.45.4",
     "flatpickr": "^4.6.13",
-    "next": "15.2.3",
+    "next": "15.2.8",
     "pg": "^8.23.1",
     "react": "^19.0.0",
     "react-apexcharts": "^1.7.0",
