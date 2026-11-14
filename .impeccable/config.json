@@ -1,0 +1,24 @@
+{
+  "hook": {
+    "enabled": true,
+    "limits": {
+      "maxFindings": 5,
+      "maxChars": 8000
+    }
+  },
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "gray-on-color",
+        "value": "*",
+        "files": [
+          "src/app/globals.css"
+        ],
+        "createdAt": "2026-11-13T18:08:25.515Z",
+        "reason": "Agent: false pairing in the vendored FullCalendar block — bg-orange-500 is a 6px event dot (.fc-daygrid-event-dot), the gray text is the separate .fc-timegrid-slot-label-frame axis label on the page ground; they never overlap"
+      }
+    ]
+  }
+}

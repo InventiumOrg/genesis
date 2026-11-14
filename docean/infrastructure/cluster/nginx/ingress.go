@@ -1,5 +1,0 @@
-package nginx
-
-func main() {
-
-}

@@ -1,0 +1,214 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-14T00:00:00Z",
+  "title": "Design System: Inventium",
+  "extensions": {
+    "colorMeta": {
+      "slate-teal-shell": {
+        "role": "primary",
+        "displayName": "Slate Teal Shell",
+        "canonical": "#0e2a33",
+        "tonalRamp": ["#081c23", "#0e2a33", "#0d3741", "#0c4752", "#0d5a65", "#0f6c78", "#3f8395", "#e7f1f3"]
+      },
+      "probe-amber": {
+        "role": "secondary",
+        "displayName": "Probe Amber",
+        "canonical": "#c86a12",
+        "tonalRamp": ["#351b06", "#552c0b", "#8a470d", "#ab580e", "#c86a12", "#d4832a", "#eec18c", "#fbf0e3"]
+      },
+      "envelope-teal": {
+        "role": "secondary",
+        "displayName": "Envelope Teal",
+        "canonical": "#0f7f8c",
+        "tonalRamp": ["#052126", "#08343a", "#0b555e", "#0d6b76", "#0f7f8c", "#2b9aab", "#96d4dd", "#e4f5f7"]
+      },
+      "breach-red": {
+        "role": "tertiary",
+        "displayName": "Breach Red",
+        "canonical": "#c8321f",
+        "tonalRamp": ["#350d08", "#55150d", "#882215", "#aa2a1a", "#c8321f", "#d44f42", "#eeaaa3", "#fbeae8"]
+      },
+      "band-edge": {
+        "role": "tertiary",
+        "displayName": "Band Edge",
+        "canonical": "#a8750c",
+        "tonalRamp": ["#2b1e04", "#463107", "#724e09", "#8e620a", "#a8750c", "#c0901b", "#e8ca7c", "#faf2dd"]
+      },
+      "technical-white": {
+        "role": "neutral",
+        "displayName": "Technical White",
+        "canonical": "#f4f6f7",
+        "tonalRamp": ["#081012", "#101a1e", "#27353b", "#44555e", "#6b8089", "#abbcc2", "#e9edef", "#fbfcfc"]
+      },
+      "hairline": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "#cbd6da",
+        "tonalRamp": ["#081012", "#101a1e", "#27353b", "#44555e", "#6b8089", "#abbcc2", "#cbd6da", "#e9edef"]
+      },
+      "out-of-play": {
+        "role": "neutral",
+        "displayName": "Out of Play",
+        "canonical": "#8a979c",
+        "tonalRamp": ["#081012", "#101a1e", "#27353b", "#44555e", "#6b8089", "#8a979c", "#abbcc2", "#e9edef"]
+      },
+      "night-ground": {
+        "role": "neutral",
+        "displayName": "Night Ground",
+        "canonical": "#081012",
+        "tonalRamp": ["#081012", "#0b1518", "#101a1e", "#27353b", "#44555e", "#5e7480", "#8a979c", "#cbd6da"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Monumental Figure", "purpose": "The single figure a trace region is about. Tabular, set inside or beside its mark." },
+      "headline": { "displayName": "Readout Figure", "purpose": "Counts and totals in a readout band; turns breach red when the figure is out of state." },
+      "title": { "displayName": "Page Heading", "purpose": "The page title under the breadcrumb. One per screen." },
+      "body": { "displayName": "Body", "purpose": "Running text and table cells, capped at max-w-prose." },
+      "label": { "displayName": "Tracked Caps", "purpose": "The only label voice: breadcrumbs, panel titles, column heads, form labels." },
+      "measure": { "displayName": "Measurement", "purpose": "Chivo Mono for quantities, units, SKUs, dates, axis ticks, rail counts, state words." }
+    },
+    "shadows": [
+      { "name": "resting-hairline-lift", "value": "0px 1px 1px 0px rgba(14,42,51,0.06)", "purpose": "Inputs at rest; seats the field without lifting it." },
+      { "name": "attached-panel", "value": "0px 1px 2px 0px rgba(14,42,51,0.08), 0px 2px 4px -2px rgba(14,42,51,0.05)", "purpose": "Popovers attached to a trigger." },
+      { "name": "floating-surface", "value": "0px 4px 8px -2px rgba(14,42,51,0.1), 0px 12px 20px -8px rgba(14,42,51,0.08)", "purpose": "Modals and the datepicker; the only genuinely floating UI." },
+      { "name": "focus-ring", "value": "0px 0px 0px 3px rgba(15,127,140,0.32)", "purpose": "Envelope-teal ring on composed controls. Base focus is a 2px solid #0f7f8c outline at 2px offset." },
+      { "name": "tooltip", "value": "0px 4px 10px -2px rgba(14,42,51,0.16)", "purpose": "Tooltips only." }
+    ],
+    "motion": [
+      { "name": "state-change", "value": "150ms ease (colors only)", "purpose": "Button, nav item and row hover. Colour moves; geometry does not." },
+      { "name": "shell-transition", "value": "300ms cubic-bezier(0.4, 0, 0.2, 1)", "purpose": "Rail expand/collapse and submenu height." }
+    ],
+    "breakpoints": [
+      { "name": "2xsm", "value": "375px" },
+      { "name": "xsm", "value": "425px" },
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "xl", "value": "1280px" },
+      { "name": "2xl", "value": "1536px" },
+      { "name": "3xl", "value": "2000px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one filled action per screen, top-right of the page masthead.",
+      "html": "<button class=\"ds-btn-primary\">Add item</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 40px; padding: 0 16px; background: #0e2a33; color: #ffffff; font-family: Chivo, ui-sans-serif, system-ui, sans-serif; font-size: 14px; font-weight: 600; border: none; border-radius: 1px; cursor: pointer; transition: background-color 150ms ease; } .ds-btn-primary:hover { background: #0d3741; } .ds-btn-primary:focus-visible { outline: 2px solid #0f7f8c; outline-offset: 2px; } .ds-btn-primary:active { background: #081c23; }"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Secondary action beside the primary; also the base for row actions.",
+      "html": "<button class=\"ds-btn-outline\">Export</button>",
+      "css": ".ds-btn-outline { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 40px; padding: 0 16px; background: #ffffff; color: #27353b; font-family: Chivo, ui-sans-serif, system-ui, sans-serif; font-size: 14px; font-weight: 600; border-radius: 1px; border: none; box-shadow: inset 0 0 0 1px #abbcc2; cursor: pointer; transition: background-color 150ms ease; } .ds-btn-outline:hover { background: #e9edef; } .ds-btn-outline:focus-visible { outline: 2px solid #0f7f8c; outline-offset: 2px; }"
+    },
+    {
+      "name": "State Word",
+      "kind": "chip",
+      "refersTo": "state-word-breach",
+      "description": "State as a tracked mono word on a flat field. Never a pill. Out-of-play desaturates instead of taking a fill.",
+      "html": "<span class=\"ds-state ds-state-in\">In stock</span> <span class=\"ds-state ds-state-edge\">Low stock</span> <span class=\"ds-state ds-state-breach\">Out of stock</span> <span class=\"ds-state ds-state-off\">Inactive</span>",
+      "css": ".ds-state { display: inline-flex; align-items: center; justify-content: center; padding: 2px 8px; border-radius: 1px; font-family: \"Chivo Mono\", ui-monospace, SFMono-Regular, monospace; font-size: 10px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap; } .ds-state-in { background: #e4f5f7; color: #0b555e; } .ds-state-edge { background: #faf2dd; color: #724e09; } .ds-state-breach { background: #fbeae8; color: #882215; } .ds-state-off { background: transparent; color: #8a979c; }"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input-text",
+      "description": "Labelled field: tracked mono caps above, near-square bordered input below, amber caret.",
+      "html": "<label class=\"ds-field-label\" for=\"ds-qty\">On hand</label><input class=\"ds-input\" id=\"ds-qty\" type=\"text\" placeholder=\"0.0 KG\" />",
+      "css": ".ds-field-label { display: block; margin-bottom: 6px; font-family: \"Chivo Mono\", ui-monospace, SFMono-Regular, monospace; font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: #5e7480; } .ds-input { height: 44px; width: 260px; padding: 10px 16px; background: transparent; color: #27353b; font-family: Chivo, ui-sans-serif, system-ui, sans-serif; font-size: 14px; border: 1px solid #abbcc2; border-radius: 2px; box-shadow: 0px 1px 1px 0px rgba(14,42,51,0.06); caret-color: #c86a12; } .ds-input::placeholder { font-family: \"Chivo Mono\", ui-monospace, monospace; font-size: 12px; letter-spacing: 0.06em; color: #8a979c; } .ds-input:focus { outline: none; border-color: #0f7f8c; }"
+    },
+    {
+      "name": "Rail Item",
+      "kind": "nav",
+      "refersTo": "nav-item-active",
+      "description": "Rail rows on the flat slate-teal field; active inverts to the work-area ground with an amber icon and a mono count.",
+      "html": "<nav class=\"ds-rail\"><div class=\"ds-rail-group\">Stock</div><a class=\"ds-rail-item ds-rail-item-active\" href=\"#\"><svg class=\"ds-rail-icon\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\"><rect x=\"3\" y=\"3\" width=\"7\" height=\"7\"/><rect x=\"14\" y=\"3\" width=\"7\" height=\"7\"/><rect x=\"3\" y=\"14\" width=\"7\" height=\"7\"/><rect x=\"14\" y=\"14\" width=\"7\" height=\"7\"/></svg><span>Inventory</span><span class=\"ds-rail-count\">18</span></a><a class=\"ds-rail-item\" href=\"#\"><svg class=\"ds-rail-icon\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\"><path d=\"M3 21V9l9-6 9 6v12\"/><path d=\"M9 21v-7h6v7\"/></svg><span>Warehouse</span><span class=\"ds-rail-count\">4</span></a></nav>",
+      "css": ".ds-rail { width: 272px; padding: 16px; background: #0e2a33; font-family: Chivo, ui-sans-serif, system-ui, sans-serif; } .ds-rail-group { font-family: \"Chivo Mono\", ui-monospace, monospace; font-size: 9px; letter-spacing: 0.17em; text-transform: uppercase; color: #3f8395; margin-bottom: 8px; } .ds-rail-item { display: flex; align-items: center; gap: 12px; width: 100%; padding: 8px 12px; border-radius: 1px; font-size: 14px; font-weight: 500; color: #cfe2e7; text-decoration: none; transition: background-color 150ms ease, color 150ms ease; } .ds-rail-item:hover { background: rgba(255,255,255,0.08); color: #ffffff; } .ds-rail-item-active { background: #f4f6f7; color: #0e2a33; font-weight: 600; } .ds-rail-icon { color: #74a6b4; flex: none; } .ds-rail-item-active .ds-rail-icon { color: #ab580e; } .ds-rail-count { margin-left: auto; font-family: \"Chivo Mono\", ui-monospace, monospace; font-size: 11px; font-variant-numeric: tabular-nums; color: #74a6b4; } .ds-rail-item-active .ds-rail-count { color: #0c4752; }"
+    },
+    {
+      "name": "Panel",
+      "kind": "card",
+      "refersTo": "panel",
+      "description": "Hairline-bounded panel with a tracked-caps header strip. No shadow; it sits on the ground.",
+      "html": "<section class=\"ds-panel\"><div class=\"ds-panel-head\">Stock on record</div><div class=\"ds-panel-body\"><div class=\"ds-panel-label\">Lines on record</div><div class=\"ds-panel-figure\">18</div><div class=\"ds-panel-note\">across every warehouse</div></div></section>",
+      "css": ".ds-panel { width: 300px; background: #ffffff; border: 1px solid #cbd6da; border-radius: 1px; font-family: Chivo, ui-sans-serif, system-ui, sans-serif; } .ds-panel-head { padding: 14px 20px; border-bottom: 1px solid #cbd6da; font-family: \"Chivo Mono\", ui-monospace, monospace; font-size: 10px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: #101a1e; } .ds-panel-body { padding: 16px 20px; } .ds-panel-label { font-family: \"Chivo Mono\", ui-monospace, monospace; font-size: 9px; letter-spacing: 0.17em; text-transform: uppercase; color: #5e7480; } .ds-panel-figure { margin-top: 6px; font-size: 34px; font-weight: 800; letter-spacing: -0.025em; line-height: 1.04; font-variant-numeric: tabular-nums; color: #101a1e; } .ds-panel-note { margin-top: 4px; font-family: \"Chivo Mono\", ui-monospace, monospace; font-size: 11px; color: #5e7480; }"
+    },
+    {
+      "name": "Data Table",
+      "kind": "custom",
+      "refersTo": "table-header-cell",
+      "description": "Mono small-caps header over a dark anchoring rule; tabular right-aligned quantities with smaller units; breached figures in breach red.",
+      "html": "<table class=\"ds-table\"><thead><tr><th>Ingredient</th><th class=\"ds-num\">On hand</th><th>State</th></tr></thead><tbody><tr><td class=\"ds-name\">Robusta beans, washed<span>Central · D1</span></td><td class=\"ds-num\"><b>48.2</b><i>kg</i></td><td><span class=\"ds-tstate ds-tstate-edge\">Low stock</span></td></tr><tr><td class=\"ds-name\">Oat milk, 1L carton<span>Central · D1</span></td><td class=\"ds-num ds-breach\"><b>0</b><i>ctn</i></td><td><span class=\"ds-tstate ds-tstate-breach\">Out of stock</span></td></tr></tbody></table>",
+      "css": ".ds-table { width: 460px; border-collapse: collapse; background: #ffffff; font-family: Chivo, ui-sans-serif, system-ui, sans-serif; font-variant-numeric: tabular-nums; } .ds-table thead { border-bottom: 1px solid #101a1e; } .ds-table th { padding: 10px 12px; text-align: left; font-family: \"Chivo Mono\", ui-monospace, monospace; font-size: 9px; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: #5e7480; } .ds-table td { padding: 12px; border-bottom: 1px solid #e9edef; vertical-align: middle; } .ds-table tbody tr:hover { background: #f4f6f7; } .ds-name { font-size: 14px; font-weight: 600; color: #101a1e; } .ds-name span { display: block; margin-top: 2px; font-family: \"Chivo Mono\", ui-monospace, monospace; font-size: 11px; font-weight: 400; color: #6b8089; } .ds-num { text-align: right; white-space: nowrap; } .ds-num b { font-family: \"Chivo Mono\", ui-monospace, monospace; font-size: 14px; font-weight: 400; color: #101a1e; } .ds-num i { margin-left: 4px; font-style: normal; font-family: \"Chivo Mono\", ui-monospace, monospace; font-size: 11px; color: #6b8089; } .ds-breach b { color: #aa2a1a; font-weight: 500; } .ds-tstate { display: inline-flex; padding: 2px 8px; border-radius: 1px; font-family: \"Chivo Mono\", ui-monospace, monospace; font-size: 10px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; } .ds-tstate-edge { background: #faf2dd; color: #724e09; } .ds-tstate-breach { background: #fbeae8; color: #882215; }"
+    },
+    {
+      "name": "Envelope Trace",
+      "kind": "custom",
+      "refersTo": "panel",
+      "description": "The signature mark: amber actual reading over a 13% envelope-teal band with hairline bounds, breach rule and timed label at the crossing.",
+      "html": "<figure class=\"ds-trace\"><figcaption class=\"ds-trace-cap\"><span>Stock on hand · last 14 days</span><span>Par envelope 40–90 kg</span></figcaption><div class=\"ds-trace-figure\">48.2<em>kg today</em></div><svg class=\"ds-trace-svg\" viewBox=\"0 0 760 150\" preserveAspectRatio=\"none\" role=\"img\" aria-label=\"Stock on hand per day over 14 days against a par envelope of 40 to 90 kg. Left the band on Nov 09.\"><rect x=\"0\" y=\"28\" width=\"760\" height=\"74\" fill=\"#0f7f8c\" opacity=\"0.13\"/><line x1=\"0\" y1=\"28\" x2=\"760\" y2=\"28\" stroke=\"#0f7f8c\" stroke-width=\"1\" vector-effect=\"non-scaling-stroke\"/><line x1=\"0\" y1=\"102\" x2=\"760\" y2=\"102\" stroke=\"#0f7f8c\" stroke-width=\"1\" vector-effect=\"non-scaling-stroke\"/><polyline points=\"0,70 58,64 117,72 175,60 234,66 292,80 351,74 409,92 468,106 526,118 585,112 643,124 701,116 760,130\" fill=\"none\" stroke=\"#c8321f\" stroke-width=\"2\" stroke-linejoin=\"round\" vector-effect=\"non-scaling-stroke\"/><line x1=\"468\" y1=\"0\" x2=\"468\" y2=\"150\" stroke=\"#c8321f\" stroke-width=\"1\" vector-effect=\"non-scaling-stroke\"/><circle cx=\"468\" cy=\"106\" r=\"4\" fill=\"#c8321f\"/><text x=\"476\" y=\"14\" fill=\"#c8321f\" font-size=\"11\" font-family=\"Chivo Mono, ui-monospace, monospace\">left band · Nov 09</text></svg><div class=\"ds-trace-axis\"><span>Nov 01</span><span>Nov 08</span><span>Nov 14</span></div></figure>",
+      "css": ".ds-trace { width: 520px; margin: 0; padding: 20px; background: #ffffff; border: 1px solid #cbd6da; border-radius: 1px; font-family: Chivo, ui-sans-serif, system-ui, sans-serif; } .ds-trace-cap { display: flex; justify-content: space-between; gap: 12px; font-family: \"Chivo Mono\", ui-monospace, monospace; font-size: 9px; letter-spacing: 0.17em; text-transform: uppercase; color: #5e7480; } .ds-trace-figure { margin-top: 8px; font-size: 44px; font-weight: 800; letter-spacing: -0.03em; line-height: 1; font-variant-numeric: tabular-nums; color: #101a1e; } .ds-trace-figure em { margin-left: 8px; font-style: normal; font-family: \"Chivo Mono\", ui-monospace, monospace; font-size: 13px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: #6b8089; } .ds-trace-svg { display: block; width: 100%; height: 150px; margin-top: 16px; } .ds-trace-axis { display: flex; justify-content: space-between; margin-top: 8px; font-family: \"Chivo Mono\", ui-monospace, monospace; font-size: 10px; color: #6b8089; }"
+    },
+    {
+      "name": "Level Bar",
+      "kind": "custom",
+      "refersTo": "panel",
+      "description": "Point-in-time variant of the same encoding: one fixed axis for every row, teal band above the in-stock bound, amber fill, breach red below the lower bound.",
+      "html": "<span class=\"ds-level\" role=\"img\" aria-label=\"48.2 on hand. In stock above 50, out at or below 10.\"><span class=\"ds-level-band\"></span><span class=\"ds-level-fill\"></span><span class=\"ds-level-low\"></span><span class=\"ds-level-ok\"></span></span><span class=\"ds-level ds-level-out\" role=\"img\" aria-label=\"0 on hand. Out of stock.\"><span class=\"ds-level-band\"></span><span class=\"ds-level-zero\"></span><span class=\"ds-level-low\"></span><span class=\"ds-level-ok\"></span></span>",
+      "css": ".ds-level { position: relative; display: inline-block; width: 112px; height: 14px; margin-right: 16px; background: #e9edef; } .ds-level-band { position: absolute; top: 0; bottom: 0; left: 50%; right: 0; background: #0f7f8c; opacity: 0.13; } .ds-level-fill { position: absolute; top: 0; bottom: 0; left: 0; width: 48%; background: #c86a12; } .ds-level-zero { position: absolute; top: 0; bottom: 0; left: 0; width: 2px; background: #c8321f; } .ds-level-low { position: absolute; top: -2px; bottom: -2px; left: 10%; width: 1px; background: #c8321f; opacity: 0.55; } .ds-level-ok { position: absolute; top: -2px; bottom: -2px; left: 50%; width: 1px; background: #0f7f8c; }"
+    },
+    {
+      "name": "Page Masthead",
+      "kind": "nav",
+      "refersTo": "table-header-cell",
+      "description": "Every page opens the same way: tracked-caps breadcrumb, heading, one line of purpose, primary action right, one hairline rule under it all.",
+      "html": "<header class=\"ds-masthead\"><div><nav class=\"ds-crumb\" aria-label=\"Breadcrumb\"><a href=\"#\">Inventium</a><span aria-hidden=\"true\">/</span><a href=\"#\">Stock</a></nav><h1 class=\"ds-h1\">Inventory</h1><p class=\"ds-sub\">Every line on record, with its level against the stock thresholds.</p></div><button class=\"ds-masthead-action\">Add item</button></header>",
+      "css": ".ds-masthead { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px; width: 560px; padding-bottom: 20px; border-bottom: 1px solid #cbd6da; font-family: Chivo, ui-sans-serif, system-ui, sans-serif; } .ds-crumb { display: flex; gap: 6px; font-family: \"Chivo Mono\", ui-monospace, monospace; font-size: 9px; letter-spacing: 0.17em; text-transform: uppercase; color: #5e7480; } .ds-crumb a { color: inherit; text-decoration: none; text-underline-offset: 3px; } .ds-crumb a:hover { color: #101a1e; text-decoration: underline; } .ds-h1 { margin: 8px 0 0; font-size: 26px; font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; color: #101a1e; } .ds-sub { margin: 6px 0 0; max-width: 60ch; font-size: 14px; line-height: 20px; color: #5e7480; } .ds-masthead-action { height: 40px; padding: 0 16px; background: #0e2a33; color: #ffffff; font-size: 14px; font-weight: 600; border: none; border-radius: 1px; cursor: pointer; transition: background-color 150ms ease; } .ds-masthead-action:hover { background: #0d3741; } .ds-masthead-action:focus-visible { outline: 2px solid #0f7f8c; outline-offset: 2px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Roast Curve",
+    "overview": "Inventium is drawn as process-control instrumentation. A roaster does not read a number card; they read the actual probe trace against the envelope the batch was meant to stay inside, and they can see in one mark whether the process is in control. Every quantity that moves in this product is drawn the same way: the actual reading in probe amber, the target or reference band in envelope teal, the moment the reading left the band in breach red. The interface refuses the category's arrangement of same-size KPI cards over a generic line chart, where the figure and its limit never appear in the same mark.\n\nThe surface is instrument-flat. A slate-teal rail holds the left edge as one unbroken field; the work area is technical white, never cream. Hairlines divide, nothing is rounded past 2px, and there is no gradient, no glass, no glow. Depth exists only as a faint offset shadow on genuinely floating things (dropdowns, tooltips, datepickers); the panels themselves sit on the ground and are bounded by a single hairline. Density is high and deliberately so: the reader is checking many lines at once, at a desk, on a counter tablet under bright overhead light, and on a warehouse floor with glare. Light is the primary theme for that reason, chosen from the use scene rather than from category habit; dark is fully designed and grounded on near-black #081012.\n\nType does two jobs and never confuses them. Chivo carries the interface and the monumental tabular figures; Chivo Mono carries measurement only — SKUs, units, axis labels, counts, timestamps, state words. Mono is never decoration. The honesty of the figures is part of the visual system, not a copy concern: where a value does not exist in the backend, the surface says so in the same small tracked caps it uses for every other label rather than drawing a plausible band or a currency figure nobody earned.",
+    "keyCharacteristics": [
+      "One encoding for every changing quantity: amber actual, teal band, red crossing.",
+      "Instrument-flat surfaces, device-pixel hairlines, nothing rounded past 2px.",
+      "Chivo for interface and monumental figures, Chivo Mono for measurement only.",
+      "Technical-white ground under a flat slate-teal rail; light theme primary.",
+      "Honest absence: no par, no price, no count unless the service answered."
+    ],
+    "rules": [
+      { "name": "The Three Signals Rule", "body": "Amber is the reading, teal is the target, red is the crossing. A colour never changes job between surfaces, and no fourth signal colour is introduced for emphasis.", "section": "colors" },
+      { "name": "The Off, Not Alarmed Rule", "body": "A record that is out of play desaturates to #8a979c on a transparent field. It never takes a coloured badge. Out of stock is a breach and stays breach red — never desaturated.", "section": "colors" },
+      { "name": "The No Glow Rule", "body": "No gradient, no glass, no coloured halo, no glow. A tint is a flat fill at a stated opacity (13% for a band, 3–6% for a dark-theme surface) or it is not drawn.", "section": "colors" },
+      { "name": "The Measurement-Only Rule", "body": "Chivo Mono is for things a device could have measured: figures, units, codes, axis labels, state words, timestamps. It is never used for a sentence, a heading, or decoration.", "section": "typography" },
+      { "name": "The Figures Line Up Rule", "body": "Every numeric column is tabular (tnum) and right-aligned, with its unit set smaller and in muted ink beside it. Tables carry font-variant-numeric: tabular-nums at the element level so this holds even where a cell forgets.", "section": "typography" },
+      { "name": "The Priority Step-Aside Rule", "body": "Dense tables do not scroll sideways to stay whole; columns leave by priority as width is lost. The inventory row sheds Updated below 1280, Category and Location below 1024, and ID and the secondary actions below 640 — at 390px it keeps name, quantity, state (moved under the name), level and one action. The actions cell is sticky-right from 640 up.", "section": "layout" },
+      { "name": "The Band Owns Its Region Rule", "body": "The signature trace gets a full region bounded by one hairline, with its figure set inside it. No card inside a card, no frame inside a frame.", "section": "layout" },
+      { "name": "The Flat Ground Rule", "body": "If an element is in the page flow, it gets a hairline and no shadow. A shadow is a statement that the element is floating above the page, and nothing in the flow is.", "section": "elevation" },
+      { "name": "The 2px Ceiling Rule", "body": "Nothing is rounded past 2px. No pills, no capsules, no fully-rounded chips anywhere a state or a figure is shown.", "section": "shapes" }
+    ],
+    "dos": [
+      "Do draw every changing quantity as the envelope trace: amber actual, teal band at 13% fill with hairline bounds, breach red at the crossing.",
+      "Do keep Chivo Mono for measurement — figures, units, SKUs, axis labels, state words, counts — and set it small with heavy tracking.",
+      "Do bound panels with a single #cbd6da hairline on the technical-white ground and leave them flat.",
+      "Do right-align numeric columns as tabular figures with the unit smaller and muted beside them.",
+      "Do label an absence in the same tracked caps as any other label: \"No target set\", \"no par set\", \"stock service unreachable\", an em-dash instead of a figure.",
+      "Do let columns step aside by priority as width is lost, keeping name, quantity, state, level and one action at 390px.",
+      "Do design both themes: dark grounds on #081012 with panels as white at 3%."
+    ],
+    "donts": [
+      "Don't round anything past 2px, and never ship a pill or capsule for a state.",
+      "Don't use a gradient, a glass blur, a coloured glow, or a shadow on anything sitting in the page flow.",
+      "Don't reassign the signal colours: amber is never decoration, teal is never a generic accent, red is never emphasis.",
+      "Don't desaturate an out-of-stock line — out of stock is a breach and stays breach red. Desaturation means switched off.",
+      "Don't draw a target band where no target exists, derive a money figure where the service returns no price, or show a count a service did not answer with.",
+      "Don't put a same-size KPI card grid over a generic line chart; the figure and its limit belong in the same mark.",
+      "Don't set body copy, headings or navigation labels in the mono face."
+    ]
+  }
+}

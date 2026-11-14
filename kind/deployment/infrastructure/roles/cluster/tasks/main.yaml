@@ -1,3 +1,0 @@
----
-- name: Include task from kind_deployed.yaml
-  include_tasks: kind_deployed.yaml
