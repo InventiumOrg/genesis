@@ -13,6 +13,7 @@ import {
 import type { InventoryItem } from "@/lib/inventory";
 import { getStatusBadgeColor, STOCK_OK_AT, STOCK_LOW_AT } from "@/lib/inventory";
 import type { Sale } from "@/lib/sales";
+import { Readout, SubReadout } from "./Readout";
 
 const money = (n: number) =>
   new Intl.NumberFormat("en-US", {
@@ -287,70 +288,6 @@ export function DashboardBoard({
             </p>
           </div>
         </section>
-      </div>
-    </div>
-  );
-}
-
-function SubReadout({
-  label,
-  value,
-  note,
-}: {
-  label: string;
-  value: string;
-  note: string;
-}) {
-  return (
-    <div className="px-5 py-3">
-      <div className="label-cap">{label}</div>
-      <div className="mt-1 flex items-baseline gap-2">
-        <span className="text-lg font-bold tabular text-gray-900 dark:text-white">
-          {value}
-        </span>
-      </div>
-      <div className="mt-0.5 font-mono text-[11px] text-gray-600 dark:text-gray-400">
-        {note}
-      </div>
-    </div>
-  );
-}
-
-function Readout({
-  label,
-  value,
-  note,
-  tone = "ok",
-  lead = false,
-}: {
-  label: string;
-  value: string;
-  note: string;
-  tone?: "ok" | "breach";
-  lead?: boolean;
-}) {
-  return (
-    <div className={lead ? "px-5 py-5" : "px-5 py-4"}>
-      <div className="label-cap">{label}</div>
-      <div
-        className={`mt-1.5 font-extrabold tabular ${
-          lead ? "text-title-sm sm:text-title-md" : "text-theme-xl"
-        } ${
-          tone === "breach"
-            ? "text-error-600 dark:text-error-300"
-            : "text-gray-900 dark:text-white"
-        }`}
-      >
-        {value}
-      </div>
-      <div
-        className={`mt-1 font-mono text-[11px] ${
-          tone === "breach"
-            ? "text-error-600 dark:text-error-300"
-            : "text-gray-600 dark:text-gray-400"
-        }`}
-      >
-        {note}
       </div>
     </div>
   );

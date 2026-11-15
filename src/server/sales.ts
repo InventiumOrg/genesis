@@ -210,3 +210,163 @@ export async function deleteSale(id: number): Promise<boolean> {
     return gone.length > 0;
   });
 }
+
+/** Midnight, `days - 1` days back, so a window of 14 includes today. */
+function windowStart(days: number): Date {
+  const since = new Date();
+  since.setHours(0, 0, 0, 0);
+  since.setDate(since.getDate() - (Math.max(1, days) - 1));
+  return since;
+}
+
+/**
+ * Revenue is `price × quantity` summed, never `price` alone.
+ *
+ * `price` on a sale row is the unit price, so a row for four cups holds the
+ * price of one. Summing the column reports a quarter of the money for that
+ * row, which is why the product is formed in SQL and not in a reducer.
+ */
+const revenueSum = sql<number>`coalesce(sum(${sales.price} * ${sales.quantity}), 0)::bigint`;
+const unitsSum = sql<number>`coalesce(sum(${sales.quantity}), 0)::int`;
+
+export async function revenueTotals(
+  days = 14,
+): Promise<{ revenue: number; units: number; sales: number; days: number }> {
+  const [found] = await db
+    .select({
+      revenue: revenueSum,
+      units: unitsSum,
+      count: sql<number>`count(*)::int`,
+    })
+    .from(sales)
+    .where(sql`${sales.createdAt} >= ${windowStart(days)}`);
+
+  return {
+    revenue: Number(found?.revenue ?? 0),
+    units: Number(found?.units ?? 0),
+    sales: Number(found?.count ?? 0),
+    days,
+  };
+}
+
+export type RevenueByPos = {
+  posId: number;
+  name: string;
+  location: string;
+  status: string;
+  revenue: number;
+  units: number;
+  sales: number;
+};
+
+/**
+ * Revenue per point of sale over the window, biggest earner first.
+ *
+ * Every point of sale is listed, including one that sold nothing: a terminal
+ * at zero for a fortnight is the reading the owner most needs, and dropping it
+ * for having no sales rows would hide exactly that.
+ */
+export async function revenueByPos(days = 14): Promise<RevenueByPos[]> {
+  const since = windowStart(days);
+
+  const rows = await db
+    .select({
+      posId: pointsOfSale.id,
+      name: pointsOfSale.name,
+      location: pointsOfSale.location,
+      status: pointsOfSale.status,
+      revenue: revenueSum,
+      units: unitsSum,
+      count: sql<number>`count(${sales.id})::int`,
+    })
+    .from(pointsOfSale)
+    .leftJoin(sales, sql`${sales.posId} = ${pointsOfSale.id} and ${sales.createdAt} >= ${since}`)
+    .groupBy(pointsOfSale.id, pointsOfSale.name, pointsOfSale.location, pointsOfSale.status)
+    .orderBy(desc(revenueSum), pointsOfSale.name);
+
+  return rows.map((r) => ({
+    posId: Number(r.posId),
+    name: String(r.name ?? ''),
+    location: String(r.location ?? ''),
+    status: String(r.status ?? ''),
+    revenue: Number(r.revenue ?? 0),
+    units: Number(r.units ?? 0),
+    sales: Number(r.count ?? 0),
+  }));
+}
+
+export type RevenueByRecipe = {
+  recipeId: number;
+  name: string;
+  revenue: number;
+  units: number;
+  sales: number;
+  cost: number;
+};
+
+/**
+ * Revenue per recipe over the window, biggest earner first.
+ *
+ * `cost` is the recipe's own recorded cost per unit, carried through so the
+ * screen can place takings beside it. It is not multiplied out into a margin
+ * here: that would be this layer deciding what the number means.
+ */
+export async function revenueByRecipe(days = 14, limit = 10): Promise<RevenueByRecipe[]> {
+  const rows = await db
+    .select({
+      recipeId: recipes.id,
+      name: recipes.name,
+      cost: recipes.cost,
+      revenue: revenueSum,
+      units: unitsSum,
+      count: sql<number>`count(${sales.id})::int`,
+    })
+    .from(sales)
+    .innerJoin(recipes, eq(recipes.id, sales.recipeId))
+    .where(sql`${sales.createdAt} >= ${windowStart(days)}`)
+    .groupBy(recipes.id, recipes.name, recipes.cost)
+    .orderBy(desc(revenueSum), recipes.name)
+    .limit(Math.max(1, limit));
+
+  return rows.map((r) => ({
+    recipeId: Number(r.recipeId),
+    name: String(r.name ?? ''),
+    revenue: Number(r.revenue ?? 0),
+    units: Number(r.units ?? 0),
+    sales: Number(r.count ?? 0),
+    cost: Number(r.cost ?? 0),
+  }));
+}
+
+/**
+ * Revenue per day across the window, oldest first, with empty days present.
+ *
+ * A day with no sales is a real reading of zero and must occupy its slot, or
+ * the trace closes the gap and draws a fortnight of trading as if it were
+ * continuous.
+ */
+export async function revenueByDay(days = 14): Promise<{ t: string; v: number }[]> {
+  const since = windowStart(days);
+
+  const rows = await db
+    .select({
+      day: sql<string>`to_char(date_trunc('day', ${sales.createdAt}), 'YYYY-MM-DD')`,
+      revenue: revenueSum,
+    })
+    .from(sales)
+    .where(sql`${sales.createdAt} >= ${since}`)
+    .groupBy(sql`date_trunc('day', ${sales.createdAt})`);
+
+  const byDay = new Map(rows.map((r) => [String(r.day), Number(r.revenue ?? 0)]));
+
+  const out: { t: string; v: number }[] = [];
+  for (let i = 0; i < Math.max(1, days); i++) {
+    const d = new Date(since);
+    d.setDate(d.getDate() + i);
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(
+      d.getDate(),
+    ).padStart(2, '0')}`;
+    out.push({ t: key, v: byDay.get(key) ?? 0 });
+  }
+  return out;
+}

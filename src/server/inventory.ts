@@ -249,3 +249,138 @@ export async function getPar(id: number): Promise<{ min: number; max: number } |
   const [found] = await db.select().from(parLevels).where(eq(parLevels.inventoryItemId, id));
   return found ? { min: found.minQty, max: found.maxQty } : null;
 }
+
+/**
+ * How many items sit in each stock state, counted once over the whole table.
+ *
+ * The state is a property of the summed ledger, so the sum happens in a
+ * subquery and the counting happens over its result. Three `listInventory`
+ * calls with a status filter would return the same numbers; this is one pass.
+ */
+export async function inventoryStatusCounts(): Promise<{
+  total: number;
+  inStock: number;
+  lowStock: number;
+  outOfStock: number;
+}> {
+  const perItem = db
+    .select({ onHand: onHand.as('on_hand') })
+    .from(inventoryItems)
+    .leftJoin(stockMovements, eq(stockMovements.inventoryItemId, inventoryItems.id))
+    .groupBy(inventoryItems.id)
+    .as('per_item');
+
+  const [found] = await db
+    .select({
+      total: sql<number>`count(*)::int`,
+      inStock: sql<number>`count(*) filter (where ${perItem.onHand} > ${STOCK_OK_AT})::int`,
+      lowStock: sql<number>`count(*) filter (where ${perItem.onHand} > ${STOCK_LOW_AT} and ${perItem.onHand} <= ${STOCK_OK_AT})::int`,
+      outOfStock: sql<number>`count(*) filter (where ${perItem.onHand} <= ${STOCK_LOW_AT})::int`,
+    })
+    .from(perItem);
+
+  return {
+    total: Number(found?.total ?? 0),
+    inStock: Number(found?.inStock ?? 0),
+    lowStock: Number(found?.lowStock ?? 0),
+    outOfStock: Number(found?.outOfStock ?? 0),
+  };
+}
+
+export type LocationStock = {
+  location: string;
+  items: number;
+  onHand: number;
+  lowStock: number;
+  outOfStock: number;
+};
+
+/**
+ * Stock grouped by the warehouse the item records, worst first.
+ *
+ * "Multi-outlet by default": a stock question has a which-warehouse answer, and
+ * the ordering puts the location with the most empty lines at the top, because
+ * that is the one being asked about.
+ */
+export async function inventoryByLocation(): Promise<LocationStock[]> {
+  const perItem = db
+    .select({
+      location: inventoryItems.location,
+      onHand: onHand.as('on_hand'),
+    })
+    .from(inventoryItems)
+    .leftJoin(stockMovements, eq(stockMovements.inventoryItemId, inventoryItems.id))
+    .groupBy(inventoryItems.id, inventoryItems.location)
+    .as('per_item');
+
+  const rows = await db
+    .select({
+      location: perItem.location,
+      items: sql<number>`count(*)::int`,
+      onHand: sql<number>`coalesce(sum(${perItem.onHand}), 0)`,
+      lowStock: sql<number>`count(*) filter (where ${perItem.onHand} > ${STOCK_LOW_AT} and ${perItem.onHand} <= ${STOCK_OK_AT})::int`,
+      outOfStock: sql<number>`count(*) filter (where ${perItem.onHand} <= ${STOCK_LOW_AT})::int`,
+    })
+    .from(perItem)
+    .groupBy(perItem.location)
+    .orderBy(
+      desc(sql`count(*) filter (where ${perItem.onHand} <= ${STOCK_LOW_AT})`),
+      desc(sql`count(*)`),
+    );
+
+  return rows.map((r) => ({
+    // An item with no warehouse recorded is still stock. It is named as
+    // unplaced rather than dropped from the total.
+    location: String(r.location ?? '').trim() || 'No warehouse recorded',
+    items: Number(r.items ?? 0),
+    onHand: q(Number(r.onHand ?? 0)),
+    lowStock: Number(r.lowStock ?? 0),
+    outOfStock: Number(r.outOfStock ?? 0),
+  }));
+}
+
+export type MovementReason = {
+  reason: string;
+  events: number;
+  added: number;
+  removed: number;
+  net: number;
+};
+
+/**
+ * What actually moved stock over a window, grouped by why.
+ *
+ * This is the ledger's own account of itself and the one reading no other
+ * screen offers: a sale drawing a recipe down, an import landing, waste
+ * logged. `added` and `removed` are kept apart because a reason that both
+ * gives and takes — an adjustment — says nothing useful as a single net
+ * figure.
+ */
+export async function movementsByReason(days = 14): Promise<MovementReason[]> {
+  const since = new Date();
+  since.setHours(0, 0, 0, 0);
+  since.setDate(since.getDate() - (Math.max(1, days) - 1));
+
+  const rows = await db
+    .select({
+      reason: stockMovements.reason,
+      events: sql<number>`count(*)::int`,
+      added: sql<number>`coalesce(sum(${stockMovements.delta}) filter (where ${stockMovements.delta} > 0), 0)`,
+      removed: sql<number>`coalesce(sum(${stockMovements.delta}) filter (where ${stockMovements.delta} < 0), 0)`,
+      net: sql<number>`coalesce(sum(${stockMovements.delta}), 0)`,
+    })
+    .from(stockMovements)
+    .where(sql`${stockMovements.occurredAt} >= ${since}`)
+    .groupBy(stockMovements.reason)
+    .orderBy(desc(sql`count(*)`));
+
+  return rows.map((r) => ({
+    reason: String(r.reason ?? ''),
+    events: Number(r.events ?? 0),
+    added: q(Number(r.added ?? 0)),
+    // Stored negative; reported as the size of the draw, which is how the
+    // interface reads it ("382 taken out"), not as a negative number.
+    removed: q(Math.abs(Number(r.removed ?? 0))),
+    net: q(Number(r.net ?? 0)),
+  }));
+}
