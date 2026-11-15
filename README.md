@@ -44,6 +44,25 @@ Recording a sale writes the sale and its drawdowns in one transaction. Nobody
 types the grams: the recipe says what a cup consumes and the ledger carries the
 result.
 
+**Money is stored as whole US cents.** `recipes.cost`, `sales.price` and
+`orders.price` are integers in cents, so $1.14 is `114`. Cents and not dollars
+because the columns are integers: dollars would round every price to the
+nearest dollar, and a float would let two sales of the same cup disagree about
+what was taken.
+
+A reader views either USD or VND, chosen from the header. **đồng is a
+conversion for display only** — no đồng figure is ever stored, so switching the
+view cannot move a stored amount. Every screen showing đồng also names the rate
+it used and the date that rate was true, because a converted number is not the
+same kind of fact as a recorded one. The choice lives in a cookie so Server
+Components render it directly; held in `localStorage` it would paint every
+amount in dollars and then flip after hydration.
+
+The rate is configuration today (`NEXT_PUBLIC_USD_VND_RATE`). `src/lib/exchange-rate.ts`
+is the seam a live provider plugs into: `getRate()` is already async and already
+falls back to the configured rate when a provider throws, so turning one on is a
+change to that one file.
+
 ### The seam back to microservices
 
 `src/lib/*-server.ts` is the only place the screens reach for data. Today those
@@ -77,6 +96,15 @@ broken query is a defect rather than something to discover in production.
   and 9 kg of limes. The rule is preserved as it was; it wants revisiting.
 - **Par levels** exist in the schema and are seeded, but no screen edits them
   yet.
+- **No live exchange rate.** `NEXT_PUBLIC_USD_VND_RATE` is a number somebody
+  typed, and a đồng figure is only as current as the date beside it.
+  `src/lib/exchange-rate.ts` has the provider seam; nothing is registered in it.
+- **Entry is USD only.** Prices and costs are typed in dollars, because that is
+  what is stored. Typing đồng would bank a figure that drifts the moment the
+  rate moves.
+- **The inventory price column is always `$0.00`.** `mapBackendItem` sets
+  `price: 0` with the note "Backend doesn't provide price", and the stock table
+  renders it anyway. It is a figure nobody earned and the column should go.
 - **Template residue.** The UI-element, chart, calendar and `test/*` routes come
   from the TailAdmin template and are not product surfaces.
 

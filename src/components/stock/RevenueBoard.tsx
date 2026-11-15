@@ -1,7 +1,14 @@
+// A Client Component so every figure follows the currency toggle. The money
+// here is not only in JSX: it is also inside `title` strings and `note`
+// props, which cannot hold a `<Money>` element, so this board needs the
+// currency as a value. Every prop it takes is already plain data.
+"use client";
+
 import Link from "next/link";
 import React from "react";
 
-import { count, money, moneyShort } from "@/lib/money";
+import { useCurrency } from "@/context/CurrencyContext";
+import { formatCount as count } from "@/lib/currency";
 import type { RevenueByPos, RevenueByRecipe } from "@/lib/sales-server";
 
 import { EnvelopeTrace, type TracePoint } from "../trace/EnvelopeTrace";
@@ -31,6 +38,8 @@ export function RevenueBoard({
   byRecipe: RevenueByRecipe[];
   readable: boolean;
 }) {
+  const { money, moneyShort, note } = useCurrency();
+
   if (!readable) {
     return (
       <Panel heading="Revenue">
@@ -269,10 +278,14 @@ export function RevenueBoard({
             query, not after it.
           </p>
           <p>
-            Amounts are in đồng, which the database stores as whole numbers
-            because VND has no minor unit. The band on the trace is where half
-            of these {days} days landed — no revenue target is recorded, so
-            nothing here is measured against a goal.
+            Amounts are stored as whole US cents and shown in whichever currency
+            the header is set to.{" "}
+            {note
+              ? `The đồng figures on this screen are ${note} — a conversion, not a recorded amount.`
+              : "These are the recorded amounts, not a conversion."}{" "}
+            The band on the trace is where half of these {days} days landed — no
+            revenue target is recorded, so nothing here is measured against a
+            goal.
           </p>
           {topPos && topPos.revenue > 0 && (
             <p>

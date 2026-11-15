@@ -1,3 +1,9 @@
+// A Client Component so the figures can follow the currency toggle. The money
+// here is not only in JSX: it is also inside `title` strings, which cannot
+// hold a `<Money>` element, so this board needs the currency as a value rather
+// than as a component. Every prop it takes is already plain data.
+"use client";
+
 import React from "react";
 import Link from "next/link";
 import { EnvelopeTrace, type TracePoint } from "../trace/EnvelopeTrace";
@@ -13,14 +19,8 @@ import {
 import type { InventoryItem } from "@/lib/inventory";
 import { getStatusBadgeColor, STOCK_OK_AT, STOCK_LOW_AT } from "@/lib/inventory";
 import type { Sale } from "@/lib/sales";
+import { useCurrency } from "@/context/CurrencyContext";
 import { Readout, SubReadout } from "./Readout";
-
-const money = (n: number) =>
-  new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    maximumFractionDigits: 0,
-  }).format(n);
 
 /** Aggregate real sales into one revenue reading per day, oldest first. */
 export function dailyRevenue(sales: Sale[], days = 14): TracePoint[] {
@@ -74,6 +74,7 @@ export function DashboardBoard({
   salesReadable: boolean;
   stockReadable: boolean;
 }) {
+  const { money } = useCurrency();
   const attention = items
     .filter((i) => i.status === "Out of Stock" || i.status === "Low Stock")
     .slice(0, 6);

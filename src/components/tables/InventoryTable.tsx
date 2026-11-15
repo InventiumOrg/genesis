@@ -7,6 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
+import Money from "@/components/common/Money";
 import Badge from "../ui/badge/Badge";
 import Button from "../ui/button/Button";
 import Pagination from "./Pagination";
@@ -152,13 +153,6 @@ export default function InventoryTable() {
     }
   };
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-    }).format(price);
-  };
-
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
@@ -295,7 +289,7 @@ export default function InventoryTable() {
                         </span>
                       </TableCell>
                       <TableCell className="px-4 py-3 text-gray-800 text-start text-theme-sm dark:text-white/90">
-                        {formatPrice(item.price)}
+                        <Money cents={item.price} />
                       </TableCell>
                       <TableCell className="px-4 py-3 text-start">
                         <Badge

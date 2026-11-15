@@ -48,12 +48,6 @@ export function orderToBackendPayload(order: Partial<Order>): Record<string, unk
   return o;
 }
 
-export function formatOrderPrice(amount: number) {
-  return new Intl.NumberFormat('en-US', {
-    maximumFractionDigits: 2,
-  }).format(amount);
-}
-
 export function formatOrderDate(dateString: string) {
   try {
     return new Date(dateString).toLocaleString('en-US', {

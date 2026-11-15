@@ -7,7 +7,8 @@ import {
   TableRow,
 } from "../ui/table";
 import SaleActions from "./SaleActions";
-import { Sale, formatSaleDate, formatSaleMoney } from "@/lib/sales";
+import Money from "@/components/common/Money";
+import { Sale, formatSaleDate } from "@/lib/sales";
 
 interface SalesTableServerProps {
   sales: Sale[];
@@ -61,7 +62,7 @@ export default function SalesTableServer({ sales }: SalesTableServerProps) {
                       {sale.quantity}
                     </TableCell>
                     <TableCell className="px-4 py-3 text-start text-theme-sm text-gray-800 dark:text-white/90">
-                      {formatSaleMoney(sale.price)}
+                      <Money cents={sale.price} />
                     </TableCell>
                     <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                       {formatSaleDate(sale.createdAt)}

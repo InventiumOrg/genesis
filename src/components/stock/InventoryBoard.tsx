@@ -4,7 +4,7 @@ import React from "react";
 import type { InventoryItem } from "@/lib/inventory";
 import { getStatusBadgeColor, STOCK_LOW_AT, STOCK_OK_AT } from "@/lib/inventory";
 import type { LocationStock, MovementReason } from "@/lib/inventory-server";
-import { count } from "@/lib/money";
+import { formatCount as count } from "@/lib/currency";
 
 import { LevelBar } from "../trace/EnvelopeTrace";
 import Badge from "../ui/badge/Badge";

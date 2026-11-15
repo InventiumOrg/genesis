@@ -1,7 +1,8 @@
 import ComponentCard from "@/components/common/ComponentCard";
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import { fetchSaleServer } from "@/lib/sales-server";
-import { formatSaleDate, formatSaleMoney } from "@/lib/sales";
+import Money from "@/components/common/Money";
+import { formatSaleDate } from "@/lib/sales";
 import { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -50,7 +51,7 @@ export default async function SaleDetailPage({ params }: SaleDetailPageProps) {
               <div>
                 <dt className="text-gray-500 dark:text-gray-400">Price</dt>
                 <dd className="text-gray-900 dark:text-white mt-1">
-                  {formatSaleMoney(sale.price)}
+                  <Money cents={sale.price} />
                 </dd>
               </div>
               <div className="md:col-span-2">
