@@ -11,12 +11,45 @@ import {
   createInventoryItem,
   deleteInventoryItem as deleteItem,
   getInventoryItem,
+  inventoryByLocation,
+  inventoryStatusCounts,
   listInventory,
+  movementsByReason,
   updateInventoryItem as updateItem,
+  type LocationStock,
+  type MovementReason,
 } from '@/server/inventory';
 
 import { InventoryItem, InventoryFilters, ITEMS_PER_PAGE, mapBackendItem } from './inventory';
 import { uiPagination, type UiPagination } from './pagination';
+
+export type { LocationStock, MovementReason };
+
+/** Everything the inventory screen reads, in one call. */
+export async function fetchInventoryOverviewServer(days = 14): Promise<{
+  days: number;
+  counts: { total: number; inStock: number; lowStock: number; outOfStock: number };
+  byLocation: LocationStock[];
+  movements: MovementReason[];
+  attention: InventoryItem[];
+}> {
+  const [counts, byLocation, movements, lowStock, outOfStock] = await Promise.all([
+    inventoryStatusCounts(),
+    inventoryByLocation(),
+    movementsByReason(days),
+    // The two worst states are read as lists, not just counted, because the
+    // screen names the lines rather than reporting how many there are.
+    listInventory({ status: 'Low Stock', page: 1, limit: 50 }),
+    listInventory({ status: 'Out of Stock', page: 1, limit: 50 }),
+  ]);
+
+  // Empty before low: a line at zero stops a sale, a line running down does not.
+  const attention = [...outOfStock.items, ...lowStock.items]
+    .map(mapBackendItem)
+    .slice(0, 12);
+
+  return { days, counts, byLocation, movements, attention };
+}
 
 export async function fetchInventoryItemsServer(filters: InventoryFilters = {}): Promise<{
   items: InventoryItem[];
