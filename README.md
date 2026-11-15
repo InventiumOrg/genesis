@@ -59,9 +59,8 @@ only those bodies change — the screens do not.
    integration sets `DATABASE_URL` for you. **Use the pooled connection string**
    (Neon's `-pooler` host): every serverless instance opens its own connections.
 3. Set the other variables from `.env.example`: the Clerk keys,
-   `NEXT_PUBLIC_BACKEND_API_URI=/api/v1`,
-   `NEXT_PUBLIC_TRANSACTIONS_API_URI=/api/v1/transactions`, and
-   `OTEL_SDK_DISABLED=true` unless a collector is running.
+   `NEXT_PUBLIC_BACKEND_API_URI=/api/v1`, and `OTEL_SDK_DISABLED=true` unless a
+   collector is running.
 4. Run the migrations against the production database once:
    `DATABASE_URL=<pooled url> npm run db:migrate`.
 

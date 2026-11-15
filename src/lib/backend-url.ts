@@ -25,29 +25,17 @@ function resolveTemplate(): string {
 }
 
 /**
- * Inventory transactions (import/export) share a single collection endpoint at
- * `/api/v1/transactions`. Override with NEXT_PUBLIC_TRANSACTIONS_API_URI, else
- * derive `{origin}/api/v1/transactions` from the main backend base.
+ * Base URL for one domain, e.g. `/api/v1/inventory`.
+ *
+ * Transactions used to resolve through a second variable of their own
+ * (`NEXT_PUBLIC_TRANSACTIONS_API_URI`), because the old split deployment put
+ * them behind a different path from the other services. They are served by this
+ * app now, at `/api/v1/transactions` like every sibling, so they go through the
+ * same template. The derive it used instead — `new URL(template).origin` — threw
+ * on the relative `/api/v1` this app sets and fell back to an absolute
+ * `http://localhost`, which no browser but the developer's own could reach.
  */
-function resolveTransactionsBase(): string {
-  const explicit = process.env.NEXT_PUBLIC_TRANSACTIONS_API_URI?.trim();
-  if (explicit) return explicit.replace(/\/+$/, '');
-
-  const template = resolveTemplate();
-  try {
-    const origin = new URL(template).origin;
-    return `${origin}/api/v1/transactions`;
-  } catch {
-    return 'http://localhost/api/v1/transactions';
-  }
-}
-
-/** Base URL for one microservice, e.g. http://localhost/v1/inventory */
 export function backendServiceBaseUrl(service: BackendServiceKey): string {
-  if (service === 'transactions') {
-    return resolveTransactionsBase();
-  }
-
   const template = resolveTemplate().replace(/\/+$/, '');
   if (template.includes(SERVICE_PLACEHOLDER)) {
     return template.replace(SERVICE_PLACEHOLDER, service);

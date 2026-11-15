@@ -79,13 +79,13 @@ export function useTransactionsClient() {
   };
 
   /**
-   * Creates a transaction. POST /api/v1/transactions
+   * Creates a transaction. POST /api/v1/transactions/create
    * The backend assigns the id and sets status to "In Progress".
    */
   const createTransaction = async (
     input: TransactionCreateInput
   ): Promise<InventoryTransaction> => {
-    const response = await apiRequest<any>('', {
+    const response = await apiRequest<any>('/create', {
       method: 'POST',
       body: JSON.stringify(input),
     });
