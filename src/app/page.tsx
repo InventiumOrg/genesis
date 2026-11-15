@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 
 import LandingRecord from '@/components/landing/LandingRecord';
+import FlagTestBanner from '@/components/launchdarkly/FlagTestBanner';
 
 export const metadata: Metadata = {
   title: 'Inventium — a sale draws its ingredients out of stock',
@@ -21,5 +22,10 @@ export const metadata: Metadata = {
 export default async function HomePage() {
   const { userId } = await auth();
   if (userId) redirect('/dashboard');
-  return <LandingRecord />;
+  return (
+    <>
+      <FlagTestBanner />
+      <LandingRecord />
+    </>
+  );
 }
