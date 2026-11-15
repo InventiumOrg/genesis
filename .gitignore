@@ -42,3 +42,9 @@ package-lock.json
 /.clerk/
 
 docs/*.env*.local
+
+# agent skills installed by `npx skills add`. Machine-local tooling, not part
+# of the product: each developer installs what their own harness reads.
+/.agents/
+/.claude/
+/skills-lock.json

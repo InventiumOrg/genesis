@@ -1,6 +1,7 @@
 import { Chivo, Chivo_Mono } from 'next/font/google';
 import './globals.css';
 
+import LaunchDarklyProvider from '@/components/launchdarkly/LaunchDarklyProvider';
 import { SidebarProvider } from '@/context/SidebarContext';
 import { ThemeProvider } from '@/context/ThemeContext';
 import { ClerkProvider } from '@clerk/nextjs';
@@ -66,7 +67,9 @@ export default function RootLayout({
       <html lang="en" className={`${chivo.variable} ${chivoMono.variable}`}>
         <body className="dark:bg-gray-950">
           <ThemeProvider>
-            <SidebarProvider>{children}</SidebarProvider>
+            <SidebarProvider>
+              <LaunchDarklyProvider>{children}</LaunchDarklyProvider>
+            </SidebarProvider>
           </ThemeProvider>
         </body>
       </html>
