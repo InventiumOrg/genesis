@@ -123,7 +123,12 @@ export const parLevels = pgTable('par_levels', {
 export const recipes = pgTable('recipes', {
   id: serial('id').primaryKey(),
   name: text('name').notNull(),
-  /** Cost in đồng; VND has no minor unit, so this is an integer. */
+  /**
+   * Cost in whole US cents, so $1.14 is 114. Cents and not dollars because the
+   * column is an integer: dollars would round every recipe to the nearest
+   * dollar. See `src/lib/currency.ts` — đồng is a conversion for display and is
+   * never stored.
+   */
   cost: integer('cost').notNull().default(0),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 });
@@ -161,6 +166,11 @@ export const sales = pgTable(
     recipeId: integer('recipe_id')
       .notNull()
       .references(() => recipes.id, { onDelete: 'restrict' }),
+    /**
+     * The price of ONE unit, in whole US cents. Revenue for the row is
+     * `price * quantity`; summing this column alone under-reports a sale of
+     * four cups by three quarters.
+     */
     price: integer('price').notNull().default(0),
     quantity: integer('quantity').notNull().default(1),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
@@ -178,6 +188,7 @@ export const orders = pgTable(
     recipeId: integer('recipe_id')
       .notNull()
       .references(() => recipes.id, { onDelete: 'restrict' }),
+    /** Price in whole US cents, so $1.14 is 114. */
     price: integer('price').notNull().default(0),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   },

@@ -8,7 +8,8 @@ import {
 } from "../ui/table";
 import RecipeActions from "./RecipeActions";
 import RecipeIngredientsDisplay from "@/components/recipes/RecipeIngredientsDisplay";
-import { Recipe, formatRecipeCost } from "@/lib/recipes";
+import Money from "@/components/common/Money";
+import { Recipe } from "@/lib/recipes";
 
 interface RecipesTableServerProps {
   recipes: Recipe[];
@@ -53,7 +54,7 @@ export default function RecipesTableServer({ recipes }: RecipesTableServerProps)
                       <RecipeIngredientsDisplay ingredients={recipe.ingredients} variant="compact" />
                     </TableCell>
                     <TableCell className="px-4 py-3 text-gray-800 text-start text-theme-sm dark:text-white/90">
-                      {formatRecipeCost(recipe.cost)}
+                      <Money cents={recipe.cost} />
                     </TableCell>
                     <TableCell className="px-4 py-3 text-start">
                       <RecipeActions recipeId={recipe.id} />

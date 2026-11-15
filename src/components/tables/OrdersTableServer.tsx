@@ -7,7 +7,8 @@ import {
   TableRow,
 } from "../ui/table";
 import OrderActions from "./OrderActions";
-import { Order, formatOrderDate, formatOrderPrice } from "@/lib/orders";
+import Money from "@/components/common/Money";
+import { Order, formatOrderDate } from "@/lib/orders";
 
 interface OrdersTableServerProps {
   orders: Order[];
@@ -76,7 +77,7 @@ export default function OrdersTableServer({ orders }: OrdersTableServerProps) {
                       {order.recipeId}
                     </TableCell>
                     <TableCell className="px-4 py-3 text-gray-800 text-start text-theme-sm dark:text-white/90">
-                      {formatOrderPrice(order.price)}
+                      <Money cents={order.price} />
                     </TableCell>
                     <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                       {formatOrderDate(order.createdAt)}

@@ -62,6 +62,3 @@ export function formatSaleDate(dateString: string) {
   }
 }
 
-export function formatSaleMoney(amount: number) {
-  return new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 }).format(amount);
-}

@@ -5,10 +5,10 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@clerk/nextjs";
 import RecipeIngredientEditor from "@/components/recipes/RecipeIngredientEditor";
 import type { Recipe } from "@/lib/recipes";
+import Money from "@/components/common/Money";
 import {
   RecipeIngredientInput,
   emptyIngredientInput,
-  formatRecipeCost,
   ingredientInputFromRaw,
   ingredientInputToRaw,
 } from "@/lib/recipes";
@@ -91,7 +91,7 @@ export default function RecipeEditForm({ recipe }: { recipe: Recipe }) {
         </div>
         <div>
           <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Current cost</p>
-          <p className="text-gray-900 dark:text-white">{formatRecipeCost(recipe.cost)}</p>
+          <p className="text-gray-900 dark:text-white"><Money cents={recipe.cost} /></p>
         </div>
 
         <div className="md:col-span-2">

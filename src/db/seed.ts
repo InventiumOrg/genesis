@@ -137,12 +137,16 @@ async function main() {
     );
   }
 
+  // Costs are in whole US cents, which is how money is stored. These were
+  // authored in đồng and converted at ₫25725.52 to $1 — the same rate the
+  // 0001 migration used — so a freshly seeded database and a migrated one
+  // hold the same figures.
   const RECIPES: { name: string; cost: number; lines: [string, number, string][] }[] = [
-    { name: 'Cà phê sữa đá', cost: 11600, lines: [['Robusta, honey-processed', 0.018, 'kg'], ['Condensed milk, 380 g tin', 0.08, 'tin'], ['Ice', 0.12, 'kg'], ['Water, filtered', 0.04, 'L'], ['Cup 16 oz + lid', 1, 'ea']] },
-    { name: 'Bạc xỉu', cost: 13200, lines: [['Robusta, honey-processed', 0.016, 'kg'], ['Fresh milk, 1 L', 0.12, 'L'], ['Condensed milk, 380 g tin', 0.05, 'tin'], ['Ice', 0.12, 'kg'], ['Cup 16 oz + lid', 1, 'ea']] },
-    { name: 'Cà phê đen', cost: 8400, lines: [['Robusta, honey-processed', 0.018, 'kg'], ['Water, filtered', 0.06, 'L'], ['Cup 16 oz + lid', 1, 'ea']] },
-    { name: 'Trà chanh đá', cost: 7600, lines: [['Tea leaves, green', 0.006, 'kg'], ['Lime, loose', 0.03, 'kg'], ['Cane sugar', 0.02, 'kg'], ['Ice', 0.15, 'kg'], ['Cup 16 oz + lid', 1, 'ea']] },
-    { name: 'Cà phê trứng', cost: 16800, lines: [['Arabica, washed', 0.02, 'kg'], ['Condensed milk, 380 g tin', 0.06, 'tin'], ['Cup 16 oz + lid', 1, 'ea']] },
+    { name: 'Cà phê sữa đá', cost: 45, lines: [['Robusta, honey-processed', 0.018, 'kg'], ['Condensed milk, 380 g tin', 0.08, 'tin'], ['Ice', 0.12, 'kg'], ['Water, filtered', 0.04, 'L'], ['Cup 16 oz + lid', 1, 'ea']] },
+    { name: 'Bạc xỉu', cost: 51, lines: [['Robusta, honey-processed', 0.016, 'kg'], ['Fresh milk, 1 L', 0.12, 'L'], ['Condensed milk, 380 g tin', 0.05, 'tin'], ['Ice', 0.12, 'kg'], ['Cup 16 oz + lid', 1, 'ea']] },
+    { name: 'Cà phê đen', cost: 33, lines: [['Robusta, honey-processed', 0.018, 'kg'], ['Water, filtered', 0.06, 'L'], ['Cup 16 oz + lid', 1, 'ea']] },
+    { name: 'Trà chanh đá', cost: 30, lines: [['Tea leaves, green', 0.006, 'kg'], ['Lime, loose', 0.03, 'kg'], ['Cane sugar', 0.02, 'kg'], ['Ice', 0.15, 'kg'], ['Cup 16 oz + lid', 1, 'ea']] },
+    { name: 'Cà phê trứng', cost: 65, lines: [['Arabica, washed', 0.02, 'kg'], ['Condensed milk, 380 g tin', 0.06, 'tin'], ['Cup 16 oz + lid', 1, 'ea']] },
   ];
 
   const createdRecipes = await db
@@ -163,12 +167,14 @@ async function main() {
     ),
   );
 
+  // Shelf price per cup, in whole US cents, converted from đồng at the same
+  // rate as the costs above.
   const PRICES: Record<string, number> = {
-    'Cà phê sữa đá': 35000,
-    'Bạc xỉu': 38000,
-    'Cà phê đen': 30000,
-    'Trà chanh đá': 32000,
-    'Cà phê trứng': 45000,
+    'Cà phê sữa đá': 136,
+    'Bạc xỉu': 148,
+    'Cà phê đen': 117,
+    'Trà chanh đá': 124,
+    'Cà phê trứng': 175,
   };
 
   // Fourteen days of trading, recorded through the domain layer so every sale
@@ -188,7 +194,7 @@ async function main() {
       await createSale({
         posId: pick(activePos).id,
         recipeId: recipe.id,
-        price: PRICES[recipe.name] ?? 30000,
+        price: PRICES[recipe.name] ?? 117,
         quantity: between(1, 4),
       });
       saleCount += 1;
@@ -228,7 +234,7 @@ async function main() {
       return {
         posId: pick(activePos).id,
         recipeId: recipe.id,
-        price: PRICES[recipe.name] ?? 30000,
+        price: PRICES[recipe.name] ?? 117,
       };
     }),
   );

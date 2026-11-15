@@ -1,4 +1,5 @@
 "use client";
+import CurrencyToggleButton from "@/components/common/CurrencyToggleButton";
 import { ThemeToggleButton } from "@/components/common/ThemeToggleButton";
 import NotificationDropdown from "@/components/header/NotificationDropdown";
 import UserDropdown from "@/components/header/UserDropdown";
@@ -98,6 +99,9 @@ const AppHeader: React.FC = () => {
           } w-full items-center justify-between gap-4 border-t border-gray-200 px-5 py-3 dark:border-gray-800 lg:flex lg:justify-end lg:border-t-0 lg:px-0`}
         >
           <div className="flex items-center gap-2 2xsm:gap-3">
+            {/* Which currency every amount on the page is read in. */}
+            <CurrencyToggleButton />
+
             {/* <!-- Dark Mode Toggler --> */}
             <ThemeToggleButton />
             {/* <!-- Dark Mode Toggler --> */}

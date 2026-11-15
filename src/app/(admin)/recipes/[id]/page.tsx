@@ -1,7 +1,7 @@
 import ComponentCard from "@/components/common/ComponentCard";
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import { fetchRecipeServer } from "@/lib/recipes-server";
-import { formatRecipeCost } from "@/lib/recipes";
+import Money from "@/components/common/Money";
 import RecipeIngredientsDisplay from "@/components/recipes/RecipeIngredientsDisplay";
 import { Metadata } from "next";
 import Link from "next/link";
@@ -41,7 +41,7 @@ export default async function RecipeDetailPage({
               <div>
                 <dt className="text-gray-500 dark:text-gray-400">Cost</dt>
                 <dd className="text-gray-900 dark:text-white mt-1">
-                  {formatRecipeCost(recipe.cost)}
+                  <Money cents={recipe.cost} />
                 </dd>
               </div>
               <div className="md:col-span-2">

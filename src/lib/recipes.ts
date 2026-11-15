@@ -182,10 +182,3 @@ export function recipeToFormBody(
   return formData;
 }
 
-export function formatRecipeCost(cost: number): string {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    maximumFractionDigits: 0,
-  }).format(cost);
-}
