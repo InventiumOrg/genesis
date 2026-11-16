@@ -30,3 +30,36 @@ export function isSessionExists(error: MaybeClerkError): boolean {
   const nested = (error as { errors?: Array<{ code?: unknown }> }).errors;
   return Array.isArray(nested) && nested.some((e) => e?.code === SESSION_EXISTS);
 }
+
+/**
+ * Build the `navigate` callback `finalize` expects.
+ *
+ * Clerk 7 hands this callback a `decorateUrl`, and using it is not optional.
+ * Where Safari's ITP would drop the session cookie, `decorateUrl` returns an
+ * absolute URL through Clerk's own `/v1/client/touch` endpoint, which refreshes
+ * the cookie and then forwards to the destination. Ignoring it — as a bare
+ * `() => router.push('/dashboard')` does — navigates with a cookie the server
+ * cannot read: middleware sees no session, sends the browser back to sign-in,
+ * and the next attempt is refused with `session_exists` because the client
+ * does have one. The screen then says "You're already signed in" to someone
+ * who cannot get in.
+ *
+ * In Clerk 6 this was handled inside `setActive`. The callback is where that
+ * responsibility moved.
+ *
+ * A decorated URL is external, so it needs a full page load; an undecorated one
+ * is a plain path and stays a client navigation.
+ */
+export function navigateAfterAuth(
+  destination: string,
+  push: (url: string) => void,
+) {
+  return ({ decorateUrl }: { decorateUrl: (url: string) => string }) => {
+    const url = decorateUrl(destination);
+    if (url.startsWith('http')) {
+      window.location.href = url;
+      return;
+    }
+    push(url);
+  };
+}

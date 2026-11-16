@@ -9,7 +9,7 @@ import React, { useState } from "react";
 import { useSignIn, useAuth } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
-import { isSessionExists } from "@/lib/clerk-session";
+import { isSessionExists, navigateAfterAuth } from "@/lib/clerk-session";
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -71,10 +71,12 @@ export default function SignInForm() {
       }
 
       if (signIn.status === "complete") {
-        // `finalize` sets the session active and navigates. Passing the
-        // destination here rather than calling `router.push` after it means
-        // the app never renders a signed-in page against a stale session.
-        await signIn.finalize({ navigate: () => router.push("/dashboard") });
+        // `finalize` sets the session active and navigates. The callback must
+        // honour `decorateUrl`, or the session cookie is not refreshed where
+        // Safari needs it and the server sees no session at the destination.
+        await signIn.finalize({
+          navigate: navigateAfterAuth("/dashboard", router.push),
+        });
         return;
       }
 

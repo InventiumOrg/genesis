@@ -8,7 +8,7 @@ import React, { useState } from "react";
 import { useSignUp, useAuth } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
-import { isSessionExists } from "@/lib/clerk-session";
+import { isSessionExists, navigateAfterAuth } from "@/lib/clerk-session";
 
 export default function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -73,7 +73,9 @@ export default function SignUpForm() {
       }
 
       if (signUp.status === "complete") {
-        await signUp.finalize({ navigate: () => router.push("/dashboard") });
+        await signUp.finalize({
+          navigate: navigateAfterAuth("/dashboard", router.push),
+        });
         return;
       }
 
@@ -125,7 +127,9 @@ export default function SignUpForm() {
       }
 
       if (signUp.status === "complete") {
-        await signUp.finalize({ navigate: () => router.push("/dashboard") });
+        await signUp.finalize({
+          navigate: navigateAfterAuth("/dashboard", router.push),
+        });
         return;
       }
 
