@@ -9,6 +9,7 @@ import React, { useState } from "react";
 import { useSignIn, useAuth } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
+import { isSessionExists } from "@/lib/clerk-session";
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -41,6 +42,13 @@ export default function SignInForm() {
     e.preventDefault();
     if (!signIn) return;
 
+    // Already signed in: the request is already satisfied, so go rather than
+    // ask Clerk to open a second session and refuse.
+    if (isSignedIn) {
+      router.push("/dashboard");
+      return;
+    }
+
     setIsLoading(true);
     setError("");
 
@@ -51,6 +59,13 @@ export default function SignInForm() {
       });
 
       if (attemptError) {
+        // `session_exists` means a session appeared between the check above
+        // and this call — another tab, or Clerk finishing its load. That is
+        // the outcome the person wanted, not an error to show them.
+        if (isSessionExists(attemptError)) {
+          router.push("/dashboard");
+          return;
+        }
         setError(attemptError.longMessage || attemptError.message);
         return;
       }
@@ -79,6 +94,11 @@ export default function SignInForm() {
   const handleOAuthSignIn = async (provider: "oauth_google" | "oauth_twitter") => {
     if (!signIn) return;
 
+    if (isSignedIn) {
+      router.push("/dashboard");
+      return;
+    }
+
     setIsLoading(true);
     setError("");
 
@@ -89,6 +109,10 @@ export default function SignInForm() {
         redirectCallbackUrl: "/dashboard",
       });
       if (ssoError) {
+        if (isSessionExists(ssoError)) {
+          router.push("/dashboard");
+          return;
+        }
         setError(ssoError.longMessage || ssoError.message);
         setIsLoading(false);
       }

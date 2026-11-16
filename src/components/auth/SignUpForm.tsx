@@ -8,6 +8,7 @@ import React, { useState } from "react";
 import { useSignUp, useAuth } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
+import { isSessionExists } from "@/lib/clerk-session";
 
 export default function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -44,6 +45,13 @@ export default function SignUpForm() {
     e.preventDefault();
     if (!signUp || !isChecked) return;
 
+    // Already signed in: Clerk will refuse to open a second session, and the
+    // refusal reads as a failure to someone who is in fact signed in.
+    if (isSignedIn) {
+      router.push("/dashboard");
+      return;
+    }
+
     setIsLoading(true);
     setError("");
 
@@ -56,6 +64,10 @@ export default function SignUpForm() {
       });
 
       if (createError) {
+        if (isSessionExists(createError)) {
+          router.push("/dashboard");
+          return;
+        }
         setError(createError.longMessage || createError.message);
         return;
       }
@@ -104,6 +116,10 @@ export default function SignUpForm() {
       });
 
       if (verifyError) {
+        if (isSessionExists(verifyError)) {
+          router.push("/dashboard");
+          return;
+        }
         setError(verifyError.longMessage || verifyError.message);
         return;
       }
@@ -126,6 +142,11 @@ export default function SignUpForm() {
   const handleOAuthSignUp = async (provider: "oauth_google" | "oauth_twitter") => {
     if (!signUp) return;
 
+    if (isSignedIn) {
+      router.push("/dashboard");
+      return;
+    }
+
     setIsLoading(true);
     setError("");
 
@@ -136,6 +157,10 @@ export default function SignUpForm() {
         redirectCallbackUrl: "/dashboard",
       });
       if (ssoError) {
+        if (isSessionExists(ssoError)) {
+          router.push("/dashboard");
+          return;
+        }
         setError(ssoError.longMessage || ssoError.message);
         setIsLoading(false);
       }

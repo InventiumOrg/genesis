@@ -1,7 +1,9 @@
 import SignUpForm from "@/components/auth/SignUpForm";
 import ThemeTogglerTwo from "@/components/common/ThemeTogglerTwo";
 import { ThemeProvider } from "@/context/ThemeContext";
+import { auth } from "@clerk/nextjs/server";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -9,7 +11,14 @@ export const metadata: Metadata = {
   description: "Create your inventory management account",
 };
 
-export default function SignUp() {
+/**
+ * A signed-in visitor never reaches the form, for the same reason as sign-in:
+ * Clerk refuses to open a second session, and the refusal reads as a failure.
+ */
+export default async function SignUp() {
+  const { userId } = await auth();
+  if (userId) redirect("/dashboard");
+
   return (
     <div className="relative z-1 bg-white p-6 dark:bg-gray-950 sm:p-0">
       <ThemeProvider>
