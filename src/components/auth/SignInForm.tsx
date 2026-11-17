@@ -7,8 +7,8 @@ import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from "@/icons";
 import Link from "next/link";
 import React, { useState } from "react";
 import { useSignIn, useAuth } from "@clerk/nextjs";
-import { useRouter } from "next/navigation";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
+import { finalizeAndGo, goAfterAuth, isSessionExists } from "@/lib/clerk-session";
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -19,15 +19,17 @@ export default function SignInForm() {
   const [error, setError] = useState("");
   
   const { signIn } = useSignIn();
+  const { isLoaded: clerkLoaded } = useAuth();
   const { isSignedIn } = useAuth();
-  const router = useRouter();
 
-  // Redirect if already signed in
+  // Already signed in on arrival. A full load, not a client navigation: the
+  // server has to read the session cookie to let the dashboard through, and
+  // this screen is exactly where the document's own view of it is stale.
   React.useEffect(() => {
     if (isSignedIn) {
-      router.push('/dashboard');
+      goAfterAuth('/dashboard');
     }
-  }, [isSignedIn, router]);
+  }, [isSignedIn]);
 
   /**
    * Handle email/password sign in.
@@ -39,7 +41,22 @@ export default function SignInForm() {
    */
   const handleEmailSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!signIn) return;
+
+    // Clerk has not answered yet, so there is nothing to sign in with. Said
+    // out loud rather than returning silently, which looked like a dead button.
+    if (!clerkLoaded || !signIn) {
+      setError(
+        "The sign-in service has not finished loading. Wait a moment and try again; if this persists, clerk.browser.js is not reaching this page.",
+      );
+      return;
+    }
+
+    // Already signed in: the request is already satisfied, so go rather than
+    // ask Clerk to open a second session and refuse.
+    if (isSignedIn) {
+      goAfterAuth("/dashboard");
+      return;
+    }
 
     setIsLoading(true);
     setError("");
@@ -51,15 +68,23 @@ export default function SignInForm() {
       });
 
       if (attemptError) {
+        // `session_exists` means a session appeared between the check above
+        // and this call — another tab, or Clerk finishing its load. That is
+        // the outcome the person wanted, not an error to show them.
+        if (isSessionExists(attemptError)) {
+          goAfterAuth("/dashboard");
+          return;
+        }
         setError(attemptError.longMessage || attemptError.message);
         return;
       }
 
       if (signIn.status === "complete") {
-        // `finalize` sets the session active and navigates. Passing the
-        // destination here rather than calling `router.push` after it means
-        // the app never renders a signed-in page against a stale session.
-        await signIn.finalize({ navigate: () => router.push("/dashboard") });
+        // Activates the session, then leaves with a full page load so the
+        // server reads the cookie that was just set. It navigates whether or
+        // not Clerk runs the callback, because a missed callback left this
+        // screen spinning with the URL unchanged and no error to show.
+        await finalizeAndGo((opts) => signIn.finalize(opts), "/dashboard");
         return;
       }
 
@@ -79,6 +104,11 @@ export default function SignInForm() {
   const handleOAuthSignIn = async (provider: "oauth_google" | "oauth_twitter") => {
     if (!signIn) return;
 
+    if (isSignedIn) {
+      goAfterAuth("/dashboard");
+      return;
+    }
+
     setIsLoading(true);
     setError("");
 
@@ -89,6 +119,10 @@ export default function SignInForm() {
         redirectCallbackUrl: "/dashboard",
       });
       if (ssoError) {
+        if (isSessionExists(ssoError)) {
+          goAfterAuth("/dashboard");
+          return;
+        }
         setError(ssoError.longMessage || ssoError.message);
         setIsLoading(false);
       }

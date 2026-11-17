@@ -6,8 +6,8 @@ import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from "@/icons";
 import Link from "next/link";
 import React, { useState } from "react";
 import { useSignUp, useAuth } from "@clerk/nextjs";
-import { useRouter } from "next/navigation";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
+import { finalizeAndGo, goAfterAuth, isSessionExists } from "@/lib/clerk-session";
 
 export default function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -23,14 +23,15 @@ export default function SignUpForm() {
   
   const { signUp } = useSignUp();
   const { isSignedIn } = useAuth();
-  const router = useRouter();
 
-  // Redirect if already signed in
+  // Already signed in on arrival. A full load, not a client navigation: the
+  // server has to read the session cookie to let the dashboard through, and
+  // this screen is exactly where the document's own view of it is stale.
   React.useEffect(() => {
     if (isSignedIn) {
-      router.push('/dashboard');
+      goAfterAuth('/dashboard');
     }
-  }, [isSignedIn, router]);
+  }, [isSignedIn]);
 
   /**
    * Handle email/password sign up.
@@ -44,6 +45,13 @@ export default function SignUpForm() {
     e.preventDefault();
     if (!signUp || !isChecked) return;
 
+    // Already signed in: Clerk will refuse to open a second session, and the
+    // refusal reads as a failure to someone who is in fact signed in.
+    if (isSignedIn) {
+      goAfterAuth("/dashboard");
+      return;
+    }
+
     setIsLoading(true);
     setError("");
 
@@ -56,12 +64,16 @@ export default function SignUpForm() {
       });
 
       if (createError) {
+        if (isSessionExists(createError)) {
+          goAfterAuth("/dashboard");
+          return;
+        }
         setError(createError.longMessage || createError.message);
         return;
       }
 
       if (signUp.status === "complete") {
-        await signUp.finalize({ navigate: () => router.push("/dashboard") });
+        await finalizeAndGo((opts) => signUp.finalize(opts), "/dashboard");
         return;
       }
 
@@ -104,12 +116,16 @@ export default function SignUpForm() {
       });
 
       if (verifyError) {
+        if (isSessionExists(verifyError)) {
+          goAfterAuth("/dashboard");
+          return;
+        }
         setError(verifyError.longMessage || verifyError.message);
         return;
       }
 
       if (signUp.status === "complete") {
-        await signUp.finalize({ navigate: () => router.push("/dashboard") });
+        await finalizeAndGo((opts) => signUp.finalize(opts), "/dashboard");
         return;
       }
 
@@ -126,6 +142,11 @@ export default function SignUpForm() {
   const handleOAuthSignUp = async (provider: "oauth_google" | "oauth_twitter") => {
     if (!signUp) return;
 
+    if (isSignedIn) {
+      goAfterAuth("/dashboard");
+      return;
+    }
+
     setIsLoading(true);
     setError("");
 
@@ -136,6 +157,10 @@ export default function SignUpForm() {
         redirectCallbackUrl: "/dashboard",
       });
       if (ssoError) {
+        if (isSessionExists(ssoError)) {
+          goAfterAuth("/dashboard");
+          return;
+        }
         setError(ssoError.longMessage || ssoError.message);
         setIsLoading(false);
       }

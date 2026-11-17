@@ -1,7 +1,9 @@
 import SignInForm from "@/components/auth/SignInForm";
 import ThemeTogglerTwo from "@/components/common/ThemeTogglerTwo";
 import { ThemeProvider } from "@/context/ThemeContext";
+import { auth } from "@clerk/nextjs/server";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -9,7 +11,17 @@ export const metadata: Metadata = {
   description: "Sign in to your inventory management account",
 };
 
-export default function SignIn() {
+/**
+ * A signed-in visitor never reaches the form.
+ *
+ * The session resolves on the server and redirects before any HTML is sent, so
+ * there is no moment where someone who is already signed in can press Sign in
+ * and be told so. The same guard the landing page uses, for the same reason.
+ */
+export default async function SignIn() {
+  const { userId } = await auth();
+  if (userId) redirect("/dashboard");
+
   return (
     <div className="relative z-1 bg-white p-6 dark:bg-gray-950 sm:p-0">
       <ThemeProvider>
