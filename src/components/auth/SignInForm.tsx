@@ -19,6 +19,7 @@ export default function SignInForm() {
   const [error, setError] = useState("");
   
   const { signIn } = useSignIn();
+  const { isLoaded: clerkLoaded } = useAuth();
   const { isSignedIn } = useAuth();
 
   // Already signed in on arrival. A full load, not a client navigation: the
@@ -40,7 +41,15 @@ export default function SignInForm() {
    */
   const handleEmailSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!signIn) return;
+
+    // Clerk has not answered yet, so there is nothing to sign in with. Said
+    // out loud rather than returning silently, which looked like a dead button.
+    if (!clerkLoaded || !signIn) {
+      setError(
+        "The sign-in service has not finished loading. Wait a moment and try again; if this persists, clerk.browser.js is not reaching this page.",
+      );
+      return;
+    }
 
     // Already signed in: the request is already satisfied, so go rather than
     // ask Clerk to open a second session and refuse.
