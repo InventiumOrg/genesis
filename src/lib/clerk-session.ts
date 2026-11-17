@@ -32,34 +32,63 @@ export function isSessionExists(error: MaybeClerkError): boolean {
 }
 
 /**
- * Build the `navigate` callback `finalize` expects.
+ * Send the browser to `destination` after a session is established.
  *
- * Clerk 7 hands this callback a `decorateUrl`, and using it is not optional.
- * Where Safari's ITP would drop the session cookie, `decorateUrl` returns an
- * absolute URL through Clerk's own `/v1/client/touch` endpoint, which refreshes
- * the cookie and then forwards to the destination. Ignoring it — as a bare
- * `() => router.push('/dashboard')` does — navigates with a cookie the server
- * cannot read: middleware sees no session, sends the browser back to sign-in,
- * and the next attempt is refused with `session_exists` because the client
- * does have one. The screen then says "You're already signed in" to someone
- * who cannot get in.
+ * Always a **full page load**, never a client navigation. The session lives in
+ * a cookie that the server reads, and a `router.push` keeps the current
+ * document: the admin layout's own `auth()` call can run against the cookie
+ * state the page started with, and the sign-in screen is the one place where
+ * that state is guaranteed to be out of date. A full load makes the server read
+ * the cookie that was just set, which is the whole point of arriving there.
  *
- * In Clerk 6 this was handled inside `setActive`. The callback is where that
- * responsibility moved.
- *
- * A decorated URL is external, so it needs a full page load; an undecorated one
- * is a plain path and stays a client navigation.
+ * `decorateUrl` is used when Clerk offers it. Where Safari's ITP would drop the
+ * cookie, it returns an absolute URL through Clerk's `/v1/client/touch`
+ * endpoint, which refreshes the cookie and then forwards on. Clerk 6 did this
+ * inside `setActive`; in Clerk 7 it is the caller's job.
  */
-export function navigateAfterAuth(
+export function goAfterAuth(
   destination: string,
-  push: (url: string) => void,
-) {
-  return ({ decorateUrl }: { decorateUrl: (url: string) => string }) => {
-    const url = decorateUrl(destination);
-    if (url.startsWith('http')) {
-      window.location.href = url;
-      return;
-    }
-    push(url);
+  decorateUrl?: (url: string) => string,
+): void {
+  let url = destination;
+  try {
+    if (decorateUrl) url = decorateUrl(destination) || destination;
+  } catch (error) {
+    // A decorator that throws must not strand the person on the sign-in
+    // screen. The undecorated path still works everywhere ITP is not in play.
+    console.error('Clerk decorateUrl failed; navigating undecorated.', error);
+  }
+  window.location.assign(url);
+}
+
+/**
+ * Finish an attempt and leave, whether or not Clerk calls the callback.
+ *
+ * `finalize` is given a `navigate`, and the documented contract is that it runs
+ * it. Relying on that alone left the screen spinning with the URL unchanged:
+ * if the callback is not reached, or `finalize` settles without running it,
+ * nothing navigates and there is no error to show either. So the navigation is
+ * attempted once from the callback and once after `finalize` returns, guarded
+ * by a flag — whichever happens first wins, and a missed callback is no longer
+ * a dead end.
+ */
+export async function finalizeAndGo(
+  finalize: (opts: {
+    navigate: (params: { decorateUrl: (url: string) => string }) => void;
+  }) => Promise<unknown>,
+  destination: string,
+): Promise<void> {
+  let left = false;
+  const go = (decorateUrl?: (url: string) => string) => {
+    if (left) return;
+    left = true;
+    goAfterAuth(destination, decorateUrl);
   };
+
+  try {
+    await finalize({ navigate: ({ decorateUrl }) => go(decorateUrl) });
+  } finally {
+    // Undecorated, because a `decorateUrl` was never handed over on this path.
+    go();
+  }
 }
