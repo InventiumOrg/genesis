@@ -21,7 +21,7 @@ export default function SignUpForm() {
   const [verificationStep, setVerificationStep] = useState(false);
   const [verificationCode, setVerificationCode] = useState("");
   
-  const { signUp } = useSignUp();
+  const { signUp, setActive } = useSignUp();
   const { isSignedIn } = useAuth();
   const router = useRouter();
 
@@ -32,14 +32,7 @@ export default function SignUpForm() {
     }
   }, [isSignedIn, router]);
 
-  /**
-   * Handle email/password sign up.
-   *
-   * Clerk 7 returns `{ error }` rather than throwing, and the attempt's state
-   * is read off `signUp` afterwards instead of off a return value. A session is
-   * activated by `finalize`, which replaces the `setActive` the hook no longer
-   * hands out.
-   */
+  // Handle email/password sign up
   const handleEmailSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!signUp || !isChecked) return;
@@ -48,43 +41,24 @@ export default function SignUpForm() {
     setError("");
 
     try {
-      const { error: createError } = await signUp.create({
+      const result = await signUp.create({
         firstName,
         lastName,
         emailAddress: email,
-        password,
+        password: password,
       });
 
-      if (createError) {
-        setError(createError.longMessage || createError.message);
-        return;
-      }
-
-      if (signUp.status === "complete") {
-        await signUp.finalize({ navigate: () => router.push("/dashboard") });
-        return;
-      }
-
-      // Anything short of complete means Clerk wants more. The only step this
-      // form implements is the email code, so it is sent only when the email
-      // is actually what is unverified — not whenever the status is not yet
-      // complete, which would send a code the account does not need.
-      if (signUp.unverifiedFields.includes("email_address")) {
-        const { error: sendError } = await signUp.verifications.sendEmailCode();
-        if (sendError) {
-          setError(sendError.longMessage || sendError.message);
-          return;
-        }
+      if (result.status === "missing_requirements") {
+        // Need email verification
+        await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
         setVerificationStep(true);
-        return;
+      } else if (result.status === "complete") {
+        await setActive({ session: result.createdSessionId });
+        router.push('/dashboard');
       }
-
-      setError(
-        `This sign-up needs ${signUp.missingFields.join(", ") || "another step"}, which this form cannot collect yet.`,
-      );
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.error("Sign up error:", err);
-      setError(err instanceof Error ? err.message : "Sign up failed. Please try again.");
+      setError(err.errors?.[0]?.message || "Sign up failed. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -99,24 +73,19 @@ export default function SignUpForm() {
     setError("");
 
     try {
-      const { error: verifyError } = await signUp.verifications.verifyEmailCode({
+      const result = await signUp.attemptEmailAddressVerification({
         code: verificationCode,
       });
 
-      if (verifyError) {
-        setError(verifyError.longMessage || verifyError.message);
-        return;
+      if (result.status === "complete") {
+        await setActive({ session: result.createdSessionId });
+        router.push('/dashboard');
+      } else {
+        setError("Verification failed. Please check your code.");
       }
-
-      if (signUp.status === "complete") {
-        await signUp.finalize({ navigate: () => router.push("/dashboard") });
-        return;
-      }
-
-      setError("The code was accepted but the account is not ready yet. Please try signing in.");
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.error("Verification error:", err);
-      setError(err instanceof Error ? err.message : "Verification failed. Please try again.");
+      setError(err.errors?.[0]?.message || "Verification failed. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -130,20 +99,14 @@ export default function SignUpForm() {
     setError("");
 
     try {
-      const { error: ssoError } = await signUp.sso({
+      await signUp.authenticateWithRedirect({
         strategy: provider,
         redirectUrl: "/sso-callback",
-        redirectCallbackUrl: "/dashboard",
+        redirectUrlComplete: "/dashboard",
       });
-      if (ssoError) {
-        setError(ssoError.longMessage || ssoError.message);
-        setIsLoading(false);
-      }
-      // On success the browser is already leaving for the provider; the
-      // spinner is left running rather than flashing off mid-redirect.
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.error("OAuth sign up error:", err);
-      setError(err instanceof Error ? err.message : "OAuth sign up failed. Please try again.");
+      setError(err.errors?.[0]?.message || "OAuth sign up failed. Please try again.");
       setIsLoading(false);
     }
   };
