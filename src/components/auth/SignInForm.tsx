@@ -18,7 +18,7 @@ export default function SignInForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   
-  const { signIn } = useSignIn();
+  const { signIn, setActive } = useSignIn();
   const { isSignedIn } = useAuth();
   const router = useRouter();
 
@@ -29,14 +29,7 @@ export default function SignInForm() {
     }
   }, [isSignedIn, router]);
 
-  /**
-   * Handle email/password sign in.
-   *
-   * Clerk 7 returns `{ error }` rather than throwing, and the attempt's state
-   * is read off `signIn` afterwards instead of off a return value. A session is
-   * activated by `finalize`, which replaces the `setActive` the hook no longer
-   * hands out.
-   */
+  // Handle email/password sign in
   const handleEmailSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!signIn) return;
@@ -45,31 +38,20 @@ export default function SignInForm() {
     setError("");
 
     try {
-      const { error: attemptError } = await signIn.password({
+      const result = await signIn.create({
         identifier: email,
-        password,
+        password: password,
       });
 
-      if (attemptError) {
-        setError(attemptError.longMessage || attemptError.message);
-        return;
+      if (result.status === "complete") {
+        await setActive({ session: result.createdSessionId });
+        router.push('/dashboard');
+      } else {
+        setError("Sign in failed. Please check your credentials.");
       }
-
-      if (signIn.status === "complete") {
-        // `finalize` sets the session active and navigates. Passing the
-        // destination here rather than calling `router.push` after it means
-        // the app never renders a signed-in page against a stale session.
-        await signIn.finalize({ navigate: () => router.push("/dashboard") });
-        return;
-      }
-
-      // A status other than `complete` is a step this form does not implement
-      // — a second factor, a password reset. Saying which one is more use than
-      // blaming the credentials.
-      setError(`This account needs another step to sign in (${signIn.status}), which this form cannot complete yet.`);
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.error("Sign in error:", err);
-      setError(err instanceof Error ? err.message : "Sign in failed. Please try again.");
+      setError(err.errors?.[0]?.message || "Sign in failed. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -83,20 +65,14 @@ export default function SignInForm() {
     setError("");
 
     try {
-      const { error: ssoError } = await signIn.sso({
+      await signIn.authenticateWithRedirect({
         strategy: provider,
         redirectUrl: "/sso-callback",
-        redirectCallbackUrl: "/dashboard",
+        redirectUrlComplete: "/dashboard",
       });
-      if (ssoError) {
-        setError(ssoError.longMessage || ssoError.message);
-        setIsLoading(false);
-      }
-      // On success the browser is already leaving for the provider; the
-      // spinner is left running rather than flashing off mid-redirect.
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.error("OAuth sign in error:", err);
-      setError(err instanceof Error ? err.message : "OAuth sign in failed. Please try again.");
+      setError(err.errors?.[0]?.message || "OAuth sign in failed. Please try again.");
       setIsLoading(false);
     }
   };

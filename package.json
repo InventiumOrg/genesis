@@ -18,7 +18,7 @@
     "db:reset": "tsx src/db/seed.ts --reset"
   },
   "dependencies": {
-    "@clerk/nextjs": "^7.10.0",
+    "@clerk/nextjs": "^6.34.5",
     "@fullcalendar/core": "^6.1.15",
     "@fullcalendar/daygrid": "^6.1.15",
     "@fullcalendar/interaction": "^6.1.15",
