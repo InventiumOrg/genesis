@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import React from "react";
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
-import DashboardBoard, { dailyRevenue } from "@/components/stock/DashboardBoard";
+import DashboardBoard from "@/components/stock/DashboardBoard";
 import { fetchInventoryItemsServer } from "@/lib/inventory-server";
 import { fetchSalesServer } from "@/lib/sales-server";
 import type { InventoryItem } from "@/lib/inventory";
-import type { Sale } from "@/lib/sales";
+import { dailyRevenue, type Sale } from "@/lib/sales";
 
 export const metadata: Metadata = {
   title: "Sales dashboard | Inventium",
