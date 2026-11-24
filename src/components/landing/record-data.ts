@@ -70,7 +70,7 @@ export const OUTLETS = [
 export const FIELDS: [string, string][] = [
   ['Outlet', 'Quán 3 · Thảo Điền'],
   ['Date', '2026-11-13'],
-  ['Shift', '07:00 — 22:00'],
+  ['Open', '07:00 — 22:00'],
   ['Tracked ingredient', 'Robusta · SKU 0142'],
   ['Par / out', '6.000 / 1.000 kg'],
 ];

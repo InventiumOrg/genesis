@@ -42,10 +42,10 @@ function State({ state }: { state: StateWord }) {
 }
 
 const NAV: NavItem[] = [
-  ['/#sm-04', 'Shift record'],
+  ['/#sm-04', 'Daily log'],
   ['/#rc-02', 'Recipe'],
   ['/#mo-01', 'Outlets'],
-  ['/pricing', 'Rate schedule'],
+  ['/pricing', 'Pricing'],
 ];
 
 /**
@@ -112,7 +112,7 @@ export default function LandingRecord() {
       <PublicHeader nav={NAV} navLabel="Sections of this record" />
 
       <main className="mx-auto max-w-[1536px] space-y-6 px-4 py-6 sm:px-6 sm:py-8">
-        <Sheet id="sm-04" form="Form SM-04 · stock movement record" note="Sample outlet · not live data">
+        <Sheet id="sm-04" form="Form SM-04 · one day at one counter" note="Sample outlet · not live data">
           <div className="flex flex-col gap-8 px-4 py-7 sm:px-5 lg:flex-row lg:items-start lg:gap-12">
             <div className="lg:flex-1">
               <h1 className="max-w-[18ch] text-[34px] leading-[1.02] font-extrabold tracking-[-0.03em] text-gray-900 sm:text-[44px] dark:text-white">

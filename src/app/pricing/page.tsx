@@ -4,9 +4,9 @@ import type { Metadata } from 'next';
 import PricingSchedule from '@/components/landing/PricingSchedule';
 
 export const metadata: Metadata = {
-  title: 'Inventium — rate schedule',
+  title: 'Inventium — pricing',
   description:
-    'Free, Business and Enterprise plans for Inventium, written as a rate schedule: four stated limits per plan and the capacity envelope that shows when you outgrow one. Sample amounts — nothing is billed yet.',
+    'Free, Business and Enterprise plans. Four stated limits each, and the chart that shows when you outgrow one. Sample amounts — nothing is billed yet.',
 };
 
 /**

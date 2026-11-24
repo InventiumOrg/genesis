@@ -93,7 +93,7 @@ export function PublicFooter({
             href="/pricing"
             className="label-cap-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
           >
-            Rate schedule
+            Pricing
           </Link>
           {authed ? (
             <Link

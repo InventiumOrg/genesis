@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Button from "../ui/button/Button";
+import { EyeIcon, PencilIcon, TrashBinIcon } from "@/icons";
+import IconAction from "./IconAction";
 import { useSalesClient } from "@/lib/sales-client";
 
 interface SaleActionsProps {
@@ -39,22 +40,16 @@ export default function SaleActions({ saleId }: SaleActionsProps) {
   };
 
   return (
-    <div className="flex flex-wrap gap-2">
-      <Button size="sm" variant="outline" onClick={handleView}>
-        View
-      </Button>
-      <Button size="sm" variant="outline" onClick={handleEdit}>
-        Edit
-      </Button>
-      <Button
-        size="sm"
-        variant="outline"
+    <div className="flex items-center justify-end gap-1">
+      <IconAction label="View sale" onClick={handleView} icon={<EyeIcon />} />
+      <IconAction label="Edit sale" onClick={handleEdit} icon={<PencilIcon />} />
+      <IconAction
+        label="Delete sale"
         onClick={handleDelete}
-        disabled={isDeleting}
-        className="text-error-600 hover:text-error-700 hover:bg-error-50 dark:text-error-400 dark:hover:text-error-300 disabled:opacity-50"
-      >
-        {isDeleting ? "Deleting…" : "Delete"}
-      </Button>
+        icon={<TrashBinIcon />}
+        tone="danger"
+        busy={isDeleting}
+      />
     </div>
   );
 }
