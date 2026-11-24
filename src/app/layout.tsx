@@ -1,4 +1,4 @@
-import { Chivo, Chivo_Mono } from 'next/font/google';
+import localFont from 'next/font/local';
 import './globals.css';
 
 import LaunchDarklyProvider from '@/components/launchdarkly/LaunchDarklyProvider';
@@ -6,22 +6,39 @@ import { SidebarProvider } from '@/context/SidebarContext';
 import { ThemeProvider } from '@/context/ThemeContext';
 import { ClerkProvider } from '@clerk/nextjs';
 
-// The vietnamese subset carries ₫ (U+20AB). Without it the currency mark
-// falls back to another face and reads lighter than the digits beside it.
-const chivo = Chivo({
-  subsets: ['latin', 'vietnamese'],
-  weight: ['400', '500', '600', '700', '800'],
+/**
+ * The faces are files in this repository, not a build-time download.
+ *
+ * `next/font/google` fetches Google's stylesheet during every build and reads
+ * the font URL out of it. When Google answers with a URL that does not end in
+ * a file extension, its loader does `/\.(woff|woff2|eot|ttf|otf)$/.exec(url)[1]`
+ * on `null` and the build dies with "Cannot read properties of null (reading
+ * '1')". That is a network response deciding whether a deploy succeeds, and it
+ * failed this repository twice.
+ *
+ * `src/fonts/*.woff2` are the upstream variable fonts from google/fonts,
+ * converted to woff2 (276 KB of TTF down to 112 KB). Variable means one file
+ * carries every weight, so there is no file-per-weight list to keep in step
+ * with the design, and full coverage means ₫ (U+20AB) renders in both faces —
+ * the mono face previously could not show it, because the vietnamese subset
+ * was the exact request Google's CSS broke on.
+ *
+ * `src/fonts/OFL.txt` is the licence these fonts ship under.
+ */
+const chivo = localFont({
+  src: './../fonts/chivo-variable.woff2',
+  weight: '100 900',
+  style: 'normal',
   variable: '--font-chivo',
   display: 'swap',
+  // Kept so a face swapping in does not shift the line it sits on.
+  adjustFontFallback: 'Arial',
 });
 
-// Chivo Mono stays on `latin`: next/font 15.2.3 cannot parse Google's CSS
-// for this family's vietnamese subset and fails the build. The consequence
-// is that ₫ inside a mono cell still falls back to another face, as it
-// always has; the display figures, which are Chivo sans, now render it.
-const chivoMono = Chivo_Mono({
-  subsets: ['latin'],
-  weight: ['400', '500'],
+const chivoMono = localFont({
+  src: './../fonts/chivo-mono-variable.woff2',
+  weight: '100 900',
+  style: 'normal',
   variable: '--font-chivo-mono',
   display: 'swap',
 });
