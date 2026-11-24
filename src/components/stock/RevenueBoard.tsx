@@ -45,7 +45,7 @@ export function RevenueBoard({
       <Panel heading="Revenue">
         <EmptyState
           title="Revenue cannot be read right now"
-          body="The database did not answer, so no trace is drawn and no total is shown. Nothing here is estimated in its place."
+          body="The database did not answer. No total is guessed in its place."
         />
       </Panel>
     );
@@ -193,7 +193,7 @@ export function RevenueBoard({
           ) : (
             <EmptyState
               title="No point of sale on record"
-              body="Revenue is reported per terminal, and none exists yet."
+              body="Add a till and its takings show up here."
             />
           )}
         </Panel>
@@ -269,34 +269,35 @@ export function RevenueBoard({
         </Panel>
       </div>
 
-      <Panel heading="What these figures are">
-        <div className="space-y-3 p-5 text-sm leading-relaxed text-gray-600 dark:text-gray-400">
-          <p>
-            Revenue is price × quantity summed over the sales recorded in this
-            window. A sale row holds the price of one unit, so a row for four
-            cups carries one cup&apos;s price; the multiplication happens in the
-            query, not after it.
-          </p>
-          <p>
-            Amounts are stored as whole US cents and shown in whichever currency
-            the header is set to.{" "}
-            {note
-              ? `The đồng figures on this screen are ${note} — a conversion, not a recorded amount.`
-              : "These are the recorded amounts, not a conversion."}{" "}
-            The band on the trace is where half of these {days} days landed — no
-            revenue target is recorded, so nothing here is measured against a
-            goal.
-          </p>
+      {/* The provenance a figure needs, as labelled facts rather than prose.
+          Three paragraphs of explanation used to sit here; a reader checking
+          where a number came from wants to find the one line that answers it,
+          not read an essay to get there. */}
+      <Panel heading="Where these numbers come from">
+        <dl className="divide-y divide-gray-200 dark:divide-gray-800">
+          <Fact term="Revenue">Price × quantity on recorded sales.</Fact>
+          <Fact term="Not deducted">Recipe cost. These are takings, not profit.</Fact>
+          <Fact term="The band">Where half of these {days} days landed. Not a target.</Fact>
+          <Fact term="Currency">
+            {note ? `Shown in đồng, ${note}.` : "Shown in US dollars, as recorded."}
+          </Fact>
           {topPos && topPos.revenue > 0 && (
-            <p>
-              {topPos.name} took the most in this window, {money(topPos.revenue)}{" "}
-              of {money(revenue)}. Cost of goods is not deducted anywhere on this
-              screen: a recipe&apos;s recorded cost sits beside its takings and is
-              not subtracted from them.
-            </p>
+            <Fact term="Top till">
+              {topPos.name}, {money(topPos.revenue)} of {money(revenue)}.
+            </Fact>
           )}
-        </div>
+        </dl>
       </Panel>
+    </div>
+  );
+}
+
+/** One labelled fact: the term on the left, the answer on the right. */
+function Fact({ term, children }: { term: string; children: React.ReactNode }) {
+  return (
+    <div className="flex flex-wrap gap-x-4 gap-y-1 px-5 py-3">
+      <dt className="label-cap min-w-[7rem]">{term}</dt>
+      <dd className="min-w-0 flex-1 text-sm text-gray-700 dark:text-gray-300">{children}</dd>
     </div>
   );
 }

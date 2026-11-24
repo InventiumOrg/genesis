@@ -118,12 +118,10 @@ export default function LandingRecord() {
           <div className="flex flex-col gap-8 px-4 py-7 sm:px-5 lg:flex-row lg:items-start lg:gap-12">
             <div className="lg:flex-1">
               <h1 className="max-w-[18ch] text-[34px] leading-[1.02] font-extrabold tracking-[-0.03em] text-gray-900 sm:text-[44px] dark:text-white">
-                Nothing on this sheet was typed in by hand.
+                Sell a coffee. Your stock goes down by itself.
               </h1>
-              <p className="mt-4 max-w-[62ch] text-[14px] leading-5 text-gray-600 dark:text-gray-400">
-                Each row below is one event at one counter. The sale rang up, the recipe said what
-                it consumed, and the next column is what was left on the shelf. Follow any figure
-                here back to the row that produced it. That is the whole product.
+              <p className="mt-4 max-w-[52ch] text-[14px] leading-5 text-gray-600 dark:text-gray-400">
+                Every row below is one real sale. Nobody typed the grams.
               </p>
             </div>
             <div className="lg:w-[260px] lg:shrink-0">
@@ -259,10 +257,8 @@ export default function LandingRecord() {
               <h2 className="max-w-[32ch] text-[26px] leading-[1.06] font-extrabold tracking-[-0.025em] text-gray-900 sm:text-[34px] dark:text-white">
                 Nobody typed 72 g. The recipe did.
               </h2>
-              <p className="mt-3 max-w-[62ch] text-[14px] leading-5 text-gray-600 dark:text-gray-400">
-                A recipe is the hinge between a sale and the stock it consumes. Four cups of cà phê
-                sữa đá at 15:52 drew five ingredients at the quantities printed on the recipe, and
-                the revenue posted from the same event.
+              <p className="mt-3 max-w-[52ch] text-[14px] leading-5 text-gray-600 dark:text-gray-400">
+                Four cups sold. Five ingredients drawn. One event, both numbers.
               </p>
             </div>
             <div className="flex gap-10 lg:w-[260px] lg:shrink-0 lg:flex-col lg:gap-5">
@@ -332,11 +328,8 @@ export default function LandingRecord() {
             <h2 className="max-w-[32ch] text-[26px] leading-[1.06] font-extrabold tracking-[-0.025em] text-gray-900 sm:text-[34px] dark:text-white">
               Every outlet repeats the same mark.
             </h2>
-            <p className="mt-3 max-w-[62ch] text-[14px] leading-5 text-gray-600 dark:text-gray-400">
-              Amber is the reading, teal is the par envelope, red is the crossing. Below, the same
-              mark twice: at full width, then at 128px in every row of the table under it. One
-              encoding to learn, and an outlet that is not trading desaturates instead of raising an
-              alarm.
+            <p className="mt-3 max-w-[52ch] text-[14px] leading-5 text-gray-600 dark:text-gray-400">
+              Amber is the level. Teal is the safe band. Red means crossed.
             </p>
           </div>
           <FullRegion />
@@ -412,10 +405,8 @@ export default function LandingRecord() {
             <h2 className="max-w-[32ch] text-[26px] leading-[1.06] font-extrabold tracking-[-0.025em] text-gray-900 sm:text-[34px] dark:text-white">
               What this record does not claim.
             </h2>
-            <p className="mt-3 max-w-[62ch] text-[14px] leading-5 text-gray-600 dark:text-gray-400">
-              Honesty is part of the instrument. Where the service has not answered, the surface
-              says so in the same tracked caps it uses for every other label — it does not draw a
-              band where no target exists, or a price nobody earned.
+            <p className="mt-3 max-w-[52ch] text-[14px] leading-5 text-gray-600 dark:text-gray-400">
+              When a number cannot be read, it says so. It never guesses one.
             </p>
           </div>
           <table className="w-full border-collapse">
@@ -458,10 +449,8 @@ export default function LandingRecord() {
               <h2 className="max-w-[20ch] text-[26px] leading-[1.04] font-extrabold tracking-[-0.03em] text-white sm:text-[34px]">
                 Start your own record.
               </h2>
-              <p className="mt-3 max-w-[58ch] text-[14px] leading-5 text-brand-100">
-                Add your warehouses, your points of sale and your recipes. From the first sale rung
-                up, stock and revenue move together, and you stop re-counting by hand to find out
-                whether they agree.
+              <p className="mt-3 max-w-[48ch] text-[14px] leading-5 text-brand-100">
+                Add your outlets and recipes. Stop counting stock by hand.
               </p>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row lg:shrink-0">

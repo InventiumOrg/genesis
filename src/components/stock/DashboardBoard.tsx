@@ -224,7 +224,7 @@ export function DashboardBoard({
               </p>
               <p className="mx-auto mt-1.5 max-w-sm text-sm text-gray-600 dark:text-gray-400">
                 {stockReadable
-                  ? "Nothing is low or out across the lines on record. This list fills itself the moment one is."
+                  ? "Nothing is low or out. This list fills itself the moment something is."
                   : "The inventory service did not answer. Nothing has been changed."}
               </p>
             </div>
@@ -250,11 +250,9 @@ export function DashboardBoard({
             />
           </div>
           <div className="border-t border-gray-200 p-5 dark:border-gray-800">
-            <p className="text-sm leading-relaxed text-gray-600 dark:text-gray-400">
-              The band on the trace above is where half of these days landed, not
-              a target: no revenue target is recorded. Stock state is derived
-              from quantity by the stock service, and no unit price is returned,
-              so stock cannot be valued here.
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              The band is where half these days landed. Not a target — none is
+              set. Stock has no price on record, so it cannot be valued here.
             </p>
           </div>
         </section>

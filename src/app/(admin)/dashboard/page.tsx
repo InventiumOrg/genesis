@@ -10,7 +10,7 @@ import { dailyRevenue, type Sale } from "@/lib/sales";
 export const metadata: Metadata = {
   title: "Sales dashboard | Inventium",
   description:
-    "Revenue drawn from recorded sales, and the stock lines that need attention.",
+    "What you sold today, and what is running low.",
 };
 
 export default async function Dashboard() {
@@ -49,7 +49,7 @@ export default async function Dashboard() {
       <PageBreadcrumb
         pageTitle="Sales dashboard"
         section="Dashboard"
-        description="Revenue is aggregated from recorded sales; stock state comes from the inventory service. Nothing on this screen is estimated."
+        description="What you sold today, and what is running low."
       />
       <DashboardBoard
         revenue={revenue}

@@ -92,7 +92,7 @@ export default function POSPage() {
       <PageBreadcrumb
         pageTitle="Points of sale"
         section="Service"
-        description="Every terminal that can ring a sale, and the warehouse it draws from."
+        description="Every till, and the warehouse it draws from."
       />
 
       <POSFiltersComponent

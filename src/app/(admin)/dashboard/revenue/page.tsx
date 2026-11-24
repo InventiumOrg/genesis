@@ -12,7 +12,7 @@ import {
 export const metadata: Metadata = {
   title: "Revenue dashboard | Inventium",
   description:
-    "What came in, per day, per point of sale and per recipe — from recorded sales alone.",
+    "What came in, by day, by till and by recipe.",
 };
 
 const WINDOW_DAYS = 14;
@@ -45,7 +45,7 @@ export default async function RevenueDashboard() {
         pageTitle="Revenue dashboard"
         section="Dashboard"
         sectionHref="/dashboard"
-        description="Revenue is price × quantity over recorded sales. No target, no forecast, and no estimate stands in for a day that has not traded."
+        description="What came in, by day, by till, by recipe."
       />
       <RevenueBoard
         days={WINDOW_DAYS}

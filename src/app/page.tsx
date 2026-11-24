@@ -6,9 +6,9 @@ import LandingRecord from '@/components/landing/LandingRecord';
 import FlagTestBanner from '@/components/launchdarkly/FlagTestBanner';
 
 export const metadata: Metadata = {
-  title: 'Inventium — a sale draws its ingredients out of stock',
+  title: 'Inventium — sell a coffee, stock goes down by itself',
   description:
-    'Inventium keeps stock and revenue in agreement for a multi-outlet food and beverage business: a sale rung up at a point of sale draws its recipe’s ingredients down from stock, and reports the revenue it returned.',
+    'Sell a coffee and your stock goes down by itself. Inventium draws a recipe’s ingredients out of stock as it sells, and reports what the sale took in.',
 };
 
 /**
