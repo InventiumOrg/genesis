@@ -15,6 +15,13 @@
       "when": 1794670000000,
       "tag": "0001_money_in_us_cents",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1795000000000,
+      "tag": "0002_location_coordinates",
+      "breakpoints": true
     }
   ]
 }

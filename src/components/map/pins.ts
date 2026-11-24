@@ -1,5 +1,5 @@
 import type { POS } from '@/lib/pos';
-import { placeOf, placeOfText } from '@/lib/places';
+import { exactPlace, placeOf, placeOfText } from '@/lib/places';
 import type { Warehouse } from '@/lib/warehouse';
 
 import type { Pin } from './LocationMap';
@@ -19,7 +19,8 @@ export function warehousePins(warehouses: Warehouse[]): {
   const unplaced: string[] = [];
 
   for (const w of warehouses) {
-    const place = placeOf(w);
+    // A surveyed door beats the middle of its ward.
+    const place = exactPlace(w.latitude, w.longitude) ?? placeOf(w);
     if (!place) {
       unplaced.push(w.name);
       continue;
@@ -42,7 +43,7 @@ export function posPins(points: POS[]): { pins: Pin[]; unplaced: string[] } {
   const unplaced: string[] = [];
 
   for (const p of points) {
-    const place = placeOfText(p.location);
+    const place = exactPlace(p.latitude, p.longitude) ?? placeOfText(p.location);
     if (!place) {
       unplaced.push(p.name);
       continue;

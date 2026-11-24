@@ -45,7 +45,9 @@ export default function LocationPanel({
     ? 'city'
     : pins.some((p) => p.place.as === 'district')
       ? 'district'
-      : 'ward';
+      : pins.some((p) => p.place.as === 'ward')
+        ? 'ward'
+        : 'exact';
 
   if (pins.length === 0) {
     return (
@@ -84,7 +86,9 @@ export default function LocationPanel({
           )}
         </div>
         <span className="label-cap">
-          Pins at {PRECISION_WORD[loosest]}, not street level
+          {loosest === 'exact'
+            ? 'Pins at recorded coordinates'
+            : `Pins at ${PRECISION_WORD[loosest]}, not street level`}
         </span>
       </div>
 

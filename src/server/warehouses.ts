@@ -15,6 +15,9 @@ export type BackendWarehouseRow = {
   District: string;
   City: string;
   Country: string;
+  /** Null when nobody recorded them; never defaulted to 0, which is a place. */
+  Latitude: number | null;
+  Longitude: number | null;
   CreatedAt: string;
 };
 
@@ -25,6 +28,8 @@ export type WarehouseInput = {
   district?: string;
   city?: string;
   country?: string;
+  latitude?: number | null;
+  longitude?: number | null;
 };
 
 function row(r: typeof warehouses.$inferSelect): BackendWarehouseRow {
@@ -36,6 +41,8 @@ function row(r: typeof warehouses.$inferSelect): BackendWarehouseRow {
     District: r.district,
     City: r.city,
     Country: r.country,
+    Latitude: r.latitude,
+    Longitude: r.longitude,
     CreatedAt: r.createdAt.toISOString(),
   };
 }
@@ -85,6 +92,8 @@ export async function createWarehouse(input: WarehouseInput): Promise<BackendWar
       district: input.district ?? '',
       city: input.city ?? '',
       country: input.country ?? '',
+      latitude: input.latitude ?? null,
+      longitude: input.longitude ?? null,
     })
     .returning();
   return row(created);
@@ -105,6 +114,8 @@ export async function updateWarehouse(
       district: input.district ?? existing.district,
       city: input.city ?? existing.city,
       country: input.country ?? existing.country,
+      latitude: input.latitude === undefined ? existing.latitude : input.latitude,
+      longitude: input.longitude === undefined ? existing.longitude : input.longitude,
     })
     .where(eq(warehouses.id, id))
     .returning();

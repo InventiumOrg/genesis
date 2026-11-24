@@ -20,6 +20,8 @@ export default function POSEditForm({ pos }: POSEditFormProps) {
     location: pos.location,
     status: pos.status,
     warehouseId: pos.warehouseId || 0,
+    latitude: pos.latitude == null ? '' : String(pos.latitude),
+    longitude: pos.longitude == null ? '' : String(pos.longitude),
   });
 
   useEffect(() => {
@@ -41,7 +43,21 @@ export default function POSEditForm({ pos }: POSEditFormProps) {
     setIsLoading(true);
 
     try {
-      await updatePOS(pos.id, formData);
+      // The two coordinate inputs are text so they can be emptied. Empty means
+      // "not recorded" and is sent as null; anything unparseable is treated the
+      // same way rather than banked as a number.
+      const toCoord = (v: string): number | null => {
+        const t = v.trim();
+        if (t === '') return null;
+        const n = Number(t);
+        return Number.isFinite(n) ? n : null;
+      };
+
+      await updatePOS(pos.id, {
+        ...formData,
+        latitude: toCoord(formData.latitude),
+        longitude: toCoord(formData.longitude),
+      });
       console.log('✅ Update successful, redirecting...');
       router.push('/pos');
       router.refresh();
@@ -166,6 +182,41 @@ export default function POSEditForm({ pos }: POSEditFormProps) {
             className="w-full h-10 px-3 border border-gray-300 rounded-sm text-sm focus:border-success-500 dark:border-gray-700 dark:bg-white/[0.03] dark:text-white"
             placeholder="Enter warehouse ID"
           />
+        </div>
+
+        {/* Optional. Left empty, the map pins this till by whatever ward or
+            district its location names, and the pin says it did so. */}
+        <div>
+          <label htmlFor="latitude" className="label-cap mb-1.5 block">
+            Latitude
+          </label>
+          <input
+            type="text"
+            inputMode="decimal"
+            id="latitude"
+            value={formData.latitude}
+            onChange={(e) => setFormData({ ...formData, latitude: e.target.value })}
+            className="w-full h-10 px-3 border border-gray-300 rounded-sm text-sm focus:border-success-500 dark:border-gray-700 dark:bg-white/[0.03] dark:text-white"
+            placeholder="10.804400"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="longitude" className="label-cap mb-1.5 block">
+            Longitude
+          </label>
+          <input
+            type="text"
+            inputMode="decimal"
+            id="longitude"
+            value={formData.longitude}
+            onChange={(e) => setFormData({ ...formData, longitude: e.target.value })}
+            className="w-full h-10 px-3 border border-gray-300 rounded-sm text-sm focus:border-success-500 dark:border-gray-700 dark:bg-white/[0.03] dark:text-white"
+            placeholder="106.734700"
+          />
+          <p className="mt-1.5 text-[12px] text-gray-500 dark:text-gray-400">
+            Leave both empty to pin by district instead.
+          </p>
         </div>
       </div>
 

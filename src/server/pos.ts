@@ -14,6 +14,9 @@ export type BackendPosRow = {
   Status: string;
   WarehouseID: number | null;
   WarehouseName: string;
+  /** Null when nobody recorded them; never defaulted to 0, which is a place. */
+  Latitude: number | null;
+  Longitude: number | null;
   CreatedAt: string;
 };
 
@@ -22,6 +25,8 @@ export type PosInput = {
   location?: string;
   status?: string;
   warehouseId?: number | null;
+  latitude?: number | null;
+  longitude?: number | null;
 };
 
 const selection = {
@@ -31,6 +36,8 @@ const selection = {
   Status: pointsOfSale.status,
   WarehouseID: pointsOfSale.warehouseId,
   WarehouseName: sql<string>`coalesce(${warehouses.name}, '')`,
+  Latitude: pointsOfSale.latitude,
+  Longitude: pointsOfSale.longitude,
   CreatedAt: pointsOfSale.createdAt,
 };
 
@@ -42,6 +49,8 @@ function row(r: Record<string, unknown>): BackendPosRow {
     Status: String(r.Status ?? 'active'),
     WarehouseID: r.WarehouseID == null ? null : Number(r.WarehouseID),
     WarehouseName: String(r.WarehouseName ?? ''),
+    Latitude: r.Latitude == null ? null : Number(r.Latitude),
+    Longitude: r.Longitude == null ? null : Number(r.Longitude),
     CreatedAt: (r.CreatedAt instanceof Date ? r.CreatedAt : new Date()).toISOString(),
   };
 }
@@ -90,6 +99,8 @@ export async function createPos(input: PosInput): Promise<BackendPosRow> {
       location: input.location ?? '',
       status: input.status ?? 'active',
       warehouseId: input.warehouseId ?? null,
+      latitude: input.latitude ?? null,
+      longitude: input.longitude ?? null,
     })
     .returning({ id: pointsOfSale.id });
   return (await getPos(created.id))!;
@@ -105,6 +116,8 @@ export async function updatePos(id: number, input: Partial<PosInput>): Promise<B
       location: input.location ?? existing.location,
       status: input.status ?? existing.status,
       warehouseId: input.warehouseId === undefined ? existing.warehouseId : input.warehouseId,
+      latitude: input.latitude === undefined ? existing.latitude : input.latitude,
+      longitude: input.longitude === undefined ? existing.longitude : input.longitude,
     })
     .where(eq(pointsOfSale.id, id));
   return getPos(id);

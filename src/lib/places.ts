@@ -18,11 +18,30 @@
  */
 
 export type Place = {
-  /** [latitude, longitude] — the centre of the named area. */
+  /** [latitude, longitude]. */
   at: [number, number];
   /** How precise this is, shown to the reader rather than implied. */
-  as: 'ward' | 'district' | 'city';
+  as: 'exact' | 'ward' | 'district' | 'city';
 };
+
+/**
+ * A recorded coordinate pair, when the row has one.
+ *
+ * Checked before any area centre: a surveyed door beats the middle of its
+ * ward. Both values must be present and inside the real range — a lone
+ * latitude, or a longitude of 200, is a half-filled form rather than a place,
+ * and falling back to the ward is better than drawing a pin in the sea.
+ */
+export function exactPlace(
+  latitude: number | null | undefined,
+  longitude: number | null | undefined,
+): Place | null {
+  if (latitude == null || longitude == null) return null;
+  if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) return null;
+  if (latitude < -90 || latitude > 90) return null;
+  if (longitude < -180 || longitude > 180) return null;
+  return { at: [latitude, longitude], as: 'exact' };
+}
 
 /** Fallback for anything in the city whose ward and district are unknown. */
 export const HO_CHI_MINH_CITY: Place = { at: [10.7769, 106.7009], as: 'city' };
@@ -107,6 +126,7 @@ export function placeOfText(location: string | null | undefined): Place | null {
 
 /** How a pin's precision reads on screen. */
 export const PRECISION_WORD: Record<Place['as'], string> = {
+  exact: 'recorded coordinates',
   ward: 'ward centre',
   district: 'district centre',
   city: 'city centre',

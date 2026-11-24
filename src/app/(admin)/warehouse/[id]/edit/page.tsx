@@ -23,6 +23,8 @@ export default function EditWarehousePage() {
     district: '',
     city: '',
     country: '',
+    latitude: '',
+    longitude: '',
   });
 
   const warehouseId = params.id ? parseInt(params.id as string) : null;
@@ -49,6 +51,8 @@ export default function EditWarehousePage() {
         district: warehouseData.district,
         city: warehouseData.city,
         country: warehouseData.country,
+        latitude: warehouseData.latitude == null ? '' : String(warehouseData.latitude),
+        longitude: warehouseData.longitude == null ? '' : String(warehouseData.longitude),
       });
     } catch (err) {
       console.error('Failed to load warehouse:', err);
@@ -86,6 +90,10 @@ export default function EditWarehousePage() {
       formDataToSend.append('District', formData.district);
       formDataToSend.append('City', formData.city);
       formDataToSend.append('Country', formData.country);
+      // Empty means "not recorded", and is sent as empty rather than 0 —
+      // zero is a real place off the coast of Africa.
+      formDataToSend.append('Latitude', formData.latitude.trim());
+      formDataToSend.append('Longitude', formData.longitude.trim());
 
       const response = await fetch(`${backendServiceBaseUrl('warehouse')}/${warehouseId}`, {
         method: 'PUT',
@@ -292,6 +300,47 @@ export default function EditWarehousePage() {
                 className="h-10 w-full rounded-sm border border-gray-300 bg-white px-3 text-sm text-gray-900 placeholder:font-mono placeholder:text-[12px] placeholder:tracking-wider placeholder:text-gray-400 focus:border-success-500 dark:border-gray-700 dark:bg-white/[0.03] dark:text-white dark:placeholder:text-gray-500"
                 disabled={isSaving}
               />
+            </div>
+          </div>
+
+          {/* Optional, and said so. Without them the map pins this warehouse at
+              the centre of the ward above, which the pin itself admits. */}
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+            <div>
+              <label htmlFor="latitude" className="label-cap mb-1.5 block">
+                Latitude
+              </label>
+              <input
+                type="text"
+                inputMode="decimal"
+                id="latitude"
+                name="latitude"
+                value={formData.latitude}
+                onChange={handleInputChange}
+                placeholder="10.804400"
+                className="h-10 w-full rounded-sm border border-gray-300 bg-white px-3 text-sm text-gray-900 placeholder:font-mono placeholder:text-[12px] placeholder:tracking-wider placeholder:text-gray-400 focus:border-success-500 dark:border-gray-700 dark:bg-white/[0.03] dark:text-white dark:placeholder:text-gray-500"
+                disabled={isSaving}
+              />
+            </div>
+
+            <div>
+              <label htmlFor="longitude" className="label-cap mb-1.5 block">
+                Longitude
+              </label>
+              <input
+                type="text"
+                inputMode="decimal"
+                id="longitude"
+                name="longitude"
+                value={formData.longitude}
+                onChange={handleInputChange}
+                placeholder="106.734700"
+                className="h-10 w-full rounded-sm border border-gray-300 bg-white px-3 text-sm text-gray-900 placeholder:font-mono placeholder:text-[12px] placeholder:tracking-wider placeholder:text-gray-400 focus:border-success-500 dark:border-gray-700 dark:bg-white/[0.03] dark:text-white dark:placeholder:text-gray-500"
+                disabled={isSaving}
+              />
+              <p className="mt-1.5 text-[12px] text-gray-500 dark:text-gray-400">
+                Leave both empty to pin by ward instead.
+              </p>
             </div>
           </div>
 

@@ -35,6 +35,13 @@ export const warehouses = pgTable('warehouses', {
   district: text('district').notNull().default(''),
   city: text('city').notNull().default(''),
   country: text('country').notNull().default(''),
+  /**
+   * Decimal degrees, WGS 84. Null when nobody has recorded them, which is the
+   * normal state: the map then falls back to the ward or district centre and
+   * says so on the pin, rather than deriving a pair from the street address.
+   */
+  latitude: doublePrecision('latitude'),
+  longitude: doublePrecision('longitude'),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 });
 
@@ -59,6 +66,9 @@ export const pointsOfSale = pgTable(
     location: text('location').notNull().default(''),
     /** 'active' | 'inactive' — an inactive POS is out of play, never an alarm. */
     status: text('status').notNull().default('active'),
+    /** Decimal degrees, WGS 84. Null when nobody has recorded them. */
+    latitude: doublePrecision('latitude'),
+    longitude: doublePrecision('longitude'),
     warehouseId: integer('warehouse_id').references(() => warehouses.id, {
       onDelete: 'set null',
     }),

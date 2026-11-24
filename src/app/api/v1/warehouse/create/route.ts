@@ -7,6 +7,7 @@ import {
   listParams,
   notFound,
   num,
+  nullableNum,
   one,
   readBody,
   requireUser,
@@ -27,6 +28,8 @@ export async function POST(request: Request) {
       district: one(body, 'district', 'District'),
       city: one(body, 'city', 'City'),
       country: one(body, 'country', 'Country'),
+      latitude: nullableNum(body, 'latitude', 'Latitude'),
+      longitude: nullableNum(body, 'longitude', 'Longitude'),
     };
     if (!payload.name.trim()) return badRequest('A name is required');
     return data(await createWarehouse(payload), 201);
