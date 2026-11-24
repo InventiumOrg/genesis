@@ -8,7 +8,6 @@ import {
   FIELDS,
   FOURTEEN_DAYS,
   FOURTEEN_DAY_PAR,
-  NOT_CLAIMED,
   OUTLETS,
   RECIPE_LINES,
   SHIFT_PAR,
@@ -22,11 +21,11 @@ import {
  * The landing record — the only Persuade surface in this app.
  *
  * The page is a completed process-control record rather than a claim over a
- * row of feature cards: five sheets of one record set, each bounded by a
+ * row of feature cards: four sheets of one record set, each bounded by a
  * single hairline on the technical-white ground and headed by its own form
- * designation. Every figure is traceable to the numbered row that produced it,
- * and the last sheet states what the record does not claim. Everything shown
- * is authored sample data (see ./record-data.ts), labelled as such on the page.
+ * designation. Every figure is traceable to the numbered row that produced it.
+ * Everything shown is authored sample data (see ./record-data.ts), labelled as
+ * such on the page.
  */
 
 /** The record's own state words, mapped onto the shared signal tones. */
@@ -46,7 +45,6 @@ const NAV: NavItem[] = [
   ['/#sm-04', 'Shift record'],
   ['/#rc-02', 'Recipe'],
   ['/#mo-01', 'Outlets'],
-  ['/#nb-00', 'Not claimed'],
   ['/pricing', 'Rate schedule'],
 ];
 
@@ -393,45 +391,6 @@ export default function LandingRecord() {
                   </td>
                   <td className={`${CELL} pr-4 sm:pr-5`}>
                     <State state={o.state} />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </Sheet>
-
-        <Sheet id="nb-00" form="Form NB-00 · not claimed" note="Read this one before you sign up">
-          <div className="px-4 py-7 sm:px-5">
-            <h2 className="max-w-[32ch] text-[26px] leading-[1.06] font-extrabold tracking-[-0.025em] text-gray-900 sm:text-[34px] dark:text-white">
-              What this record does not claim.
-            </h2>
-            <p className="mt-3 max-w-[52ch] text-[14px] leading-5 text-gray-600 dark:text-gray-400">
-              When a number cannot be read, it says so. It never guesses one.
-            </p>
-          </div>
-          <table className="w-full border-collapse">
-            <caption className="sr-only">Facts this page does not assert.</caption>
-            <thead>
-              <tr>
-                <Th className="hidden pl-4 sm:table-cell sm:pl-5">№</Th>
-                <Th className="pl-4 sm:pl-3">Subject</Th>
-                <Th>Answer on file</Th>
-                <Th className="hidden pr-4 md:table-cell sm:pr-5">What the surface does instead</Th>
-              </tr>
-            </thead>
-            <tbody>
-              {NOT_CLAIMED.map((c) => (
-                <tr key={c.n} className="transition-colors hover:bg-gray-50 dark:hover:bg-white/3">
-                  <td className={`${CELL} hidden pl-4 font-mono text-[12px] tabular text-gray-600 sm:table-cell sm:pl-5 dark:text-gray-400`}>
-                    {c.n}
-                  </td>
-                  <td className={`${CELL} pl-4 text-[14px] sm:pl-3`}>
-                    {c.subject}
-                    <span className={`${SUB} md:hidden`}>{c.note}</span>
-                  </td>
-                  <td className={`${CELL} label-cap-sm whitespace-nowrap text-gray-600 dark:text-gray-400`}>{c.answer}</td>
-                  <td className={`${CELL} hidden pr-4 font-mono text-[12px] text-gray-600 md:table-cell sm:pr-5 dark:text-gray-400`}>
-                    {c.note}
                   </td>
                 </tr>
               ))}

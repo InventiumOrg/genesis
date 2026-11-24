@@ -67,15 +67,6 @@ export const OUTLETS = [
   { name: 'Quán 4', district: 'Thủ Đức', pos: '0 active', onHand: '—', drawn: '—', posted: '—', state: 'out-of-play' as StateWord, par: undefined, series: null },
 ];
 
-export const NOT_CLAIMED = [
-  { n: '1', subject: 'Par level for ice', answer: 'Not set', note: 'the trace still draws; the state word says no par set' },
-  { n: '2', subject: 'Supplier price for limes', answer: 'Not answered', note: 'an em-dash, never a figure derived to fill the column' },
-  { n: '3', subject: 'Roles and permissions', answer: 'Not modelled yet', note: 'every signed-in user sees every surface today' },
-  { n: '4', subject: 'Customers, testimonials, benchmarks', answer: 'None', note: 'this product has none, so this page shows none' },
-  { n: '5', subject: 'Every figure on this page', answer: 'Sample data', note: 'one fictional outlet, authored for this page' },
-  { n: '6', subject: 'Published prices', answer: 'Sample only', note: 'the rate schedule carries placeholder amounts and says so on its own sheet' },
-];
-
 export const FIELDS: [string, string][] = [
   ['Outlet', 'Quán 3 · Thảo Điền'],
   ['Date', '2026-11-13'],
