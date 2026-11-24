@@ -2,6 +2,8 @@
 import { useState, useEffect } from 'react';
 import { usePOSClient } from '@/lib/pos-client';
 import { POS, POSFilters } from '@/lib/pos';
+import LocationPanel from '@/components/map/LocationPanel';
+import { posPins } from '@/components/map/pins';
 import POSTable from '@/components/pos/POSTable';
 import POSFiltersComponent from '@/components/pos/POSFilters';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
@@ -121,13 +123,17 @@ export default function POSPage() {
           <LoadingSpinner message="Loading POS..." />
         </div>
       ) : (
-        <POSTable
-          posList={posList}
-          pagination={pagination}
-          onPageChange={handlePageChange}
-          isLoading={isLoading}
-          onPOSDeleted={handlePOSDeleted}
-        />
+        <div className="space-y-6">
+          {/* Which counters, and where they stand. */}
+          <LocationPanel {...posPins(posList)} />
+          <POSTable
+            posList={posList}
+            pagination={pagination}
+            onPageChange={handlePageChange}
+            isLoading={isLoading}
+            onPOSDeleted={handlePOSDeleted}
+          />
+        </div>
       )}
     </div>
   );
