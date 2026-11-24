@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Button from "../ui/button/Button";
+import { EyeIcon, PencilIcon, TrashBinIcon } from "@/icons";
 import { useRecipesClient } from "@/lib/recipes-client";
+import IconAction from "./IconAction";
 
 interface RecipeActionsProps {
   recipeId: number;
@@ -45,22 +46,16 @@ export default function RecipeActions({ recipeId }: RecipeActionsProps) {
   };
 
   return (
-    <div className="flex flex-wrap gap-2">
-      <Button size="sm" variant="outline" onClick={handleView}>
-        View
-      </Button>
-      <Button size="sm" variant="outline" onClick={handleEdit}>
-        Edit
-      </Button>
-      <Button
-        size="sm"
-        variant="outline"
+    <div className="flex items-center justify-end gap-1">
+      <IconAction label="View recipe" onClick={handleView} icon={<EyeIcon />} />
+      <IconAction label="Edit recipe" onClick={handleEdit} icon={<PencilIcon />} />
+      <IconAction
+        label="Delete recipe"
         onClick={handleDelete}
-        disabled={isDeleting}
-        className="text-error-600 hover:text-error-700 hover:bg-error-50 dark:text-error-400 dark:hover:text-error-300 disabled:opacity-50"
-      >
-        {isDeleting ? "Deleting…" : "Delete"}
-      </Button>
+        icon={<TrashBinIcon />}
+        tone="danger"
+        busy={isDeleting}
+      />
     </div>
   );
 }

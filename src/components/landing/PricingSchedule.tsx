@@ -138,7 +138,7 @@ export default function PricingSchedule({ authed = false }: { authed?: boolean }
       <main className="mx-auto max-w-[1536px] space-y-6 px-4 py-6 sm:px-6 sm:py-8">
         <Sheet
           id="rs-01"
-          form="Form RS-01 · schedule of charges"
+          form="Form RS-01 · what it costs"
           note="Sample amounts · nothing is billed yet"
         >
           <PlanRates />
@@ -169,7 +169,7 @@ export default function PricingSchedule({ authed = false }: { authed?: boolean }
 
         <Sheet
           id="rs-02"
-          form="Form RS-02 · schedule of inclusions"
+          form="Form RS-02 · what is included"
           note="Sample lines · nothing is contracted"
         >
           <div className="px-4 py-7 sm:px-5">
@@ -285,7 +285,7 @@ export default function PricingSchedule({ authed = false }: { authed?: boolean }
           </div>
         </Sheet>
 
-        <Sheet id="rs-04" form="Form RS-04 · questions on the schedule" note="Answered in plain terms">
+        <Sheet id="rs-04" form="Form RS-04 · questions on pricing" note="Answered in plain terms">
           <dl className="grid grid-cols-1 border-t border-gray-200 lg:grid-cols-2 dark:border-gray-800">
             {QUESTIONS.map(([q, a], i) => (
               <div

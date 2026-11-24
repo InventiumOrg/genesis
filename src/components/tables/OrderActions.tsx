@@ -1,7 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import Button from "../ui/button/Button";
+import { PencilIcon } from "@/icons";
+import IconAction from "./IconAction";
 
 interface OrderActionsProps {
   orderId: number;
@@ -15,10 +16,8 @@ export default function OrderActions({ orderId }: OrderActionsProps) {
   };
 
   return (
-    <div className="flex gap-2">
-      <Button size="sm" variant="outline" onClick={handleEdit}>
-        Edit
-      </Button>
+    <div className="flex items-center justify-end gap-1">
+      <IconAction label="Edit order" onClick={handleEdit} icon={<PencilIcon />} />
     </div>
   );
 }

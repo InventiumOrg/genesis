@@ -31,7 +31,7 @@ export default async function SalesPage({ searchParams }: SalesPageProps) {
         <PageBreadcrumb
           pageTitle="Sales"
           section="Service"
-          description="Every recorded sale, the recipe it sold and the point of sale that rang it."
+          description="Every sale, what it sold, and which till rang it."
           actions={
             <Link href="/sales/add" className="inline-flex h-10 items-center justify-center rounded-sm bg-brand-900 px-4 text-sm font-semibold text-white transition-colors hover:bg-brand-800 dark:bg-brand-500 dark:hover:bg-brand-400">
               Record sale

@@ -32,7 +32,7 @@ export default async function RecipesPage({ searchParams }: RecipesPageProps) {
           pageTitle="Recipes"
           section="Stock"
           sectionHref="/inventory"
-          description="Each recipe is the bridge between a sale and the ingredients it consumes."
+          description="What each drink is made of, and what it costs."
           actions={
             <Link href="/recipes/add" className="inline-flex h-10 items-center justify-center rounded-sm bg-brand-900 px-4 text-sm font-semibold text-white transition-colors hover:bg-brand-800 dark:bg-brand-500 dark:hover:bg-brand-400">
               New recipe

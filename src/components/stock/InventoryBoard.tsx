@@ -57,7 +57,7 @@ export function InventoryBoard({
       <Panel heading="Stock">
         <EmptyState
           title="Stock cannot be read right now"
-          body="The database did not answer, so nothing is drawn. No figure here is estimated in its place, and nothing has been changed."
+          body="The database did not answer. Nothing is guessed, and nothing changed."
         />
       </Panel>
     );
@@ -159,7 +159,7 @@ export function InventoryBoard({
           ) : (
             <EmptyState
               title="Every line is inside its state"
-              body="Nothing is low or out across the lines on record. This list fills itself the moment one is."
+              body="Nothing is low or out. This list fills itself the moment something is."
             />
           )}
         </Panel>
@@ -253,13 +253,14 @@ export function InventoryBoard({
                 ))}
               </TableBody>
             </Table>
-            <p className="border-t border-gray-200 px-5 py-4 text-sm leading-relaxed text-gray-600 dark:border-gray-800 dark:text-gray-400">
-              On hand is one sum of every movement recorded against that
-              warehouse&apos;s lines, so it adds quantities in different units
-              together. It reads as a count of things moved, not a weight.
-              Low and out come from the same thresholds the rest of the product
-              uses: in stock above {STOCK_OK_AT}, out at or below {STOCK_LOW_AT},
-              regardless of unit.
+            {/* The two things a reader of this table has to be told, as a
+                footnote rather than a paragraph: the sum mixes units, and the
+                thresholds ignore them. */}
+            <p className="border-t border-gray-200 px-5 py-4 text-sm text-gray-600 dark:border-gray-800 dark:text-gray-400">
+              On hand adds up different units, so read it as things moved, not
+              weight. Above {STOCK_OK_AT} is in stock, {STOCK_LOW_AT + 1} to{" "}
+              {STOCK_OK_AT} is low, {STOCK_LOW_AT} or under is out — whatever
+              the unit.
             </p>
           </div>
         ) : (

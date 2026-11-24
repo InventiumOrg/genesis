@@ -124,6 +124,14 @@ export function usePOSClient() {
       if (pos.location) formData.append('location', pos.location);
       if (pos.status) formData.append('status', pos.status);
       if (pos.warehouseId !== undefined) formData.append('warehouseId', pos.warehouseId.toString());
+      // Sent even when null, as an empty value: that is how the route is told
+      // to clear a coordinate rather than leave the stored one alone.
+      if (pos.latitude !== undefined) {
+        formData.append('latitude', pos.latitude === null ? '' : String(pos.latitude));
+      }
+      if (pos.longitude !== undefined) {
+        formData.append('longitude', pos.longitude === null ? '' : String(pos.longitude));
+      }
 
       const response = await apiRequest<any>(`/${id}`, {
         method: 'PUT',

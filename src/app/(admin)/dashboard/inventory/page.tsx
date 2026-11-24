@@ -13,7 +13,7 @@ import {
 export const metadata: Metadata = {
   title: "Inventory dashboard | Inventium",
   description:
-    "What is left, where it is, and what moved it — summed from the stock movement ledger.",
+    "What is left, where it sits, and what moved it.",
 };
 
 const WINDOW_DAYS = 14;
@@ -44,7 +44,7 @@ export default async function InventoryDashboard() {
         pageTitle="Inventory dashboard"
         section="Dashboard"
         sectionHref="/dashboard"
-        description="On hand is the stock movement ledger summed, never a stored figure. Every count here traces to the rows that produced it."
+        description="What is left, where it sits, and what moved it."
       />
       <InventoryBoard
         days={WINDOW_DAYS}

@@ -2,6 +2,8 @@
 import { useState, useEffect } from 'react';
 import { useWarehouseClient } from '@/lib/warehouse-client';
 import { Warehouse, WarehouseFilters } from '@/lib/warehouse';
+import LocationPanel from '@/components/map/LocationPanel';
+import { warehousePins } from '@/components/map/pins';
 import WarehouseTable from '@/components/warehouse/WarehouseTable';
 import WarehouseFiltersComponent from '@/components/warehouse/WarehouseFilters';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
@@ -123,13 +125,17 @@ export default function WarehousePage() {
           <LoadingSpinner message="Loading warehouses..." />
         </div>
       ) : (
-        <WarehouseTable
-          warehouses={warehouses}
-          pagination={pagination}
-          onPageChange={handlePageChange}
-          isLoading={isLoading}
-          onWarehouseDeleted={handleWarehouseDeleted}
-        />
+        <div className="space-y-6">
+          {/* Where these sit, before the list of what they are. */}
+          <LocationPanel {...warehousePins(warehouses)} />
+          <WarehouseTable
+            warehouses={warehouses}
+            pagination={pagination}
+            onPageChange={handlePageChange}
+            isLoading={isLoading}
+            onWarehouseDeleted={handleWarehouseDeleted}
+          />
+        </div>
       )}
       </div>
     </div>

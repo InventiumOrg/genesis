@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import TransactionCreateButton from "@/components/transactions/TransactionCreateButton";
+import { PencilIcon, TrashBinIcon } from "@/icons";
+import IconAction from "./IconAction";
 import { deleteInventoryItem, InventoryItem } from "@/lib/inventory";
 
 interface InventoryActionsProps {
@@ -48,18 +50,15 @@ export default function InventoryActions({ item }: InventoryActionsProps) {
           className={ACTION}
         />
       </span>
-      <button type="button" onClick={handleEdit} className={ACTION}>
-        Edit
-      </button>
+      <IconAction label="Edit item" onClick={handleEdit} icon={<PencilIcon />} />
       <span className="hidden sm:contents">
-        <button
-          type="button"
+        <IconAction
+          label="Delete item"
           onClick={handleDelete}
-          disabled={isDeleting}
-          className={`${ACTION} text-error-600 hover:border-error-300 hover:bg-error-50 hover:text-error-700 disabled:cursor-not-allowed disabled:text-gray-400 dark:text-error-300 dark:hover:bg-error-500/10`}
-        >
-          {isDeleting ? 'Deleting…' : 'Delete'}
-        </button>
+          icon={<TrashBinIcon />}
+          tone="danger"
+          busy={isDeleting}
+        />
       </span>
     </div>
   );

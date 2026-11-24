@@ -6,6 +6,7 @@ import {
   handle,
   listParams,
   notFound,
+  nullableNum,
   num,
   one,
   readBody,
@@ -45,6 +46,8 @@ export async function PUT(request: Request, ctx: Ctx) {
       location: one(body, 'location', 'Location'),
       status: one(body, 'status', 'Status'),
       warehouseId: num(one(body, 'warehouseId', 'WarehouseID', 'warehouse_id')) ?? null,
+      latitude: nullableNum(body, 'latitude', 'Latitude'),
+      longitude: nullableNum(body, 'longitude', 'Longitude'),
     };
     const updated = await updatePos(id, payload);
     return updated ? data(updated) : notFound('Point of sale');

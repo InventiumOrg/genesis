@@ -85,6 +85,29 @@ export const num = (v: string | undefined, fallback?: number): number | undefine
   return Number.isFinite(n) ? n : fallback;
 };
 
+/**
+ * Read a nullable number, keeping the three answers a form can give apart.
+ *
+ * `undefined` — the key was absent, so leave the stored value alone.
+ * `null`      — the key was sent empty, so clear the stored value.
+ * a number    — use it.
+ *
+ * `num` collapses the first two into `undefined`, which is right for a required
+ * field and wrong for an optional one: it makes clearing a coordinate
+ * impossible. Returns `null` for junk as well, because a field someone typed
+ * nonsense into is not a value to keep.
+ */
+export const nullableNum = (
+  b: Body,
+  ...keys: string[]
+): number | null | undefined => {
+  const raw = one(b, ...keys);
+  if (raw === undefined) return undefined;
+  if (raw.trim() === '') return null;
+  const n = Number(raw);
+  return Number.isFinite(n) ? n : null;
+};
+
 /** One place where an unexpected failure becomes a 500 instead of a stack trace. */
 export async function handle<T>(fn: () => Promise<T>): Promise<T | NextResponse> {
   try {
