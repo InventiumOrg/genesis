@@ -18,39 +18,8 @@ import {
 } from "../ui/table";
 import type { InventoryItem } from "@/lib/inventory";
 import { getStatusBadgeColor, STOCK_OK_AT, STOCK_LOW_AT } from "@/lib/inventory";
-import type { Sale } from "@/lib/sales";
 import { useCurrency } from "@/context/CurrencyContext";
 import { Readout, SubReadout } from "./Readout";
-
-/** Aggregate real sales into one revenue reading per day, oldest first. */
-export function dailyRevenue(sales: Sale[], days = 14): TracePoint[] {
-  const byDay = new Map<string, number>();
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  const localKey = (d: Date) =>
-    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
-      d.getDate()
-    ).padStart(2, "0")}`;
-
-  for (let i = days - 1; i >= 0; i--) {
-    const d = new Date(today);
-    d.setDate(d.getDate() - i);
-    byDay.set(localKey(d), 0);
-  }
-
-  for (const sale of sales) {
-    if (!sale.createdAt) continue;
-    const when = new Date(sale.createdAt);
-    if (Number.isNaN(when.getTime())) continue;
-    const key = localKey(when);
-    if (byDay.has(key)) {
-      byDay.set(key, (byDay.get(key) || 0) + sale.price * (sale.quantity || 1));
-    }
-  }
-
-  return Array.from(byDay.entries()).map(([t, v]) => ({ t, v }));
-}
 
 const shortDay = (iso: string) =>
   new Date(iso).toLocaleDateString("en-US", { day: "2-digit", month: "short" });
